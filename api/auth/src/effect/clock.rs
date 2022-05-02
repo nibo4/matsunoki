@@ -18,3 +18,8 @@ impl Clock for DefaultClock {
     }
 }
 
+
+trait HaveClock {
+    type Clock: Clock;
+    fn clock(&self) -> Self::Clock; 
+}
