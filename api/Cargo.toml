@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+  "auth",
+  "auth-http"
+]
