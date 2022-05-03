@@ -1,50 +1,40 @@
 use async_trait::async_trait;
-use derive_more::{Constructor, Deref};
+use derive_more::{Constructor, Deref, Display};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum SignInWithIdpError {
-    #[error("id: {id} entity is not exist")]
-    AlreadyExist { id: String },
+pub enum VerifyError {
+    #[error("Token expired.")]
+    TokenExpired,
+    #[error("Provider user disabled.(id: ${0})")]
+    UserDisabled(LocalId),
+    #[error("Provider user not found.(id: ${0})")]
+    UserNotFound(LocalId),
+    #[error("Invalidated api key")]
+    InvalidatedApiKey,
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
 }
 
 #[derive(Debug, Constructor, Clone)]
-pub struct SignInWithIdpConfig {
-    pub key: String,
-    pub callback_url: String,
-    pub provider_id_token: String,
-    pub provider_id: String,
+pub struct VerifyResult {
+    pub uid: LocalId,
+    pub full_name: FullName,
 }
 
-#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
+#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
 pub struct LocalId(String);
 
-#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
+#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
 pub struct FederatedId(String);
 
-#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
+#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
 pub struct FullName(String);
 
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
 pub struct AccessToken(String);
 
-#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
-pub struct RefreashToken(String);
-
-#[derive(Debug, Constructor, Clone)]
-pub struct SignInWithIdpResult {
-    pub local_id: LocalId,
-    pub federated_id: FederatedId,
-    pub full_name: FullName,
-    pub access_token: AccessToken,
-    pub refresh_token: RefreashToken,
-}
-
 #[async_trait]
 trait FirebaseAuthDriver {
-    async fn sign_in_with_idp(
-        config: SignInWithIdpConfig,
-    ) -> Result<SignInWithIdpResult, SignInWithIdpError>;
+    async fn verify(token: AccessToken) -> Result<VerifyResult, VerifyError>;
 }
