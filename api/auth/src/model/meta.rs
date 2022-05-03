@@ -2,17 +2,16 @@ use std::ops::Deref;
 
 pub trait Identifier: Deref + PartialEq + Eq + Clone {}
 
-pub trait Entity<T: Identifier>{
+pub trait Entity<T: Identifier> {
     fn id(&self) -> &T;
 }
 
 pub trait AggregateRoot<T: Identifier>: Entity<T> {}
 
-
 #[cfg(test)]
 mod tests {
+    use super::{AggregateRoot, Entity, Identifier};
     use derive_more::Deref;
-    use super::{Identifier, Entity, AggregateRoot};
 
     #[test]
     pub fn test_define_user_id() {
@@ -29,8 +28,10 @@ mod tests {
 
         impl Identifier for UserId {}
 
-        struct User { id: UserId }
-        
+        struct User {
+            id: UserId,
+        }
+
         impl Entity<UserId> for User {
             fn id(&self) -> &UserId {
                 &self.id
@@ -45,8 +46,10 @@ mod tests {
 
         impl Identifier for UserId {}
 
-        struct User { id: UserId }
-        
+        struct User {
+            id: UserId,
+        }
+
         impl Entity<UserId> for User {
             fn id(&self) -> &UserId {
                 &self.id

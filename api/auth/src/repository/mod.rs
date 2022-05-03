@@ -1,2 +1,2 @@
-pub mod user_repository;
 mod internal;
+pub mod user_repository;
