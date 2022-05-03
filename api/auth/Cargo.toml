@@ -8,3 +8,6 @@ edition = "2021"
 [dependencies]
 derive_more = {version = "0.99.17"}
 chrono = { version = "0.4.19" }
+async-trait = { version = "0.1.53" }
+anyhow = { version = "1.0" }
+thiserror = { version = "1.0" }

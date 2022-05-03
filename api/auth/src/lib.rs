@@ -2,6 +2,7 @@ pub mod ability;
 pub mod model;
 pub mod usecase;
 pub mod effect;
+pub mod repository;
 
 #[cfg(test)]
 mod tests {
