@@ -23,18 +23,24 @@ pub struct VerifyResult {
 }
 
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
-pub struct LocalId(String);
+pub struct LocalId(pub String);
 
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
-pub struct FederatedId(String);
+pub struct FederatedId(pub String);
 
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
-pub struct FullName(String);
+pub struct FullName(pub String);
 
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
-pub struct AccessToken(String);
+pub struct AccessToken(pub String);
 
 #[async_trait]
-trait FirebaseAuthDriver {
-    async fn verify(token: AccessToken) -> Result<VerifyResult, VerifyError>;
+pub trait FirebaseAuthDriver {
+    async fn verify(&self, token: AccessToken) -> Result<VerifyResult, VerifyError>;
+}
+
+#[async_trait]
+pub trait HaveFirebaseAuthDriver {
+    type FirebaseAuthDriver: FirebaseAuthDriver + Send + Sync + 'static;
+    fn firebase_auth(&self) -> Self::FirebaseAuthDriver;
 }

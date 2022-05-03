@@ -5,13 +5,12 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum ResolveError {
-    #[error("id: {id} entity is not exist")]
-    NotExist { id: String },
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
 }
 
+#[cfg_attr(test, mockall::automock)]
 #[async_trait]
 pub trait Repository<I: Identifier, T: AggregateRoot<I>> {
-    async fn resolve(&self, id: I) -> Result<T, ResolveError>;
+    async fn resolve(&self, id: &I) -> Result<Option<T>, ResolveError>;
 }
