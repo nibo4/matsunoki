@@ -1,6 +1,7 @@
 use crate::model::user::{User, UserId};
 use crate::repository::internal::Repository;
 
+use async_trait::async_trait;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -11,6 +12,7 @@ pub enum StoreError {
     Unexpected(#[from] anyhow::Error),
 }
 
+#[async_trait]
 pub trait UserRepository: Repository<UserId, User> {
-    fn store(u: User) -> Result<(), StoreError>;
+    async fn store(&self, u: User) -> Result<(), StoreError>;
 }

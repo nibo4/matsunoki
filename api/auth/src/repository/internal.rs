@@ -13,5 +13,5 @@ pub enum ResolveError {
 
 #[async_trait]
 pub trait Repository<I: Identifier, T: AggregateRoot<I>> {
-    async fn resolve(id: I) -> Result<T, ResolveError>;
+    async fn resolve(&self, id: I) -> Result<T, ResolveError>;
 }
