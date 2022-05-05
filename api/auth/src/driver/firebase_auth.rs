@@ -34,12 +34,13 @@ pub struct FullName(pub String);
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
 pub struct AccessToken(pub String);
 
+#[cfg_attr(test, mockall::automock)]
 #[async_trait]
 pub trait FirebaseAuthDriver {
     async fn verify(&self, token: AccessToken) -> Result<VerifyResult, VerifyError>;
 }
 
-#[async_trait]
+#[cfg_attr(test, mockall::automock(type FirebaseAuthDriver = MockFirebaseAuthDriver;))]
 pub trait HaveFirebaseAuthDriver {
     type FirebaseAuthDriver: FirebaseAuthDriver + Send + Sync + 'static;
     fn firebase_auth(&self) -> Self::FirebaseAuthDriver;

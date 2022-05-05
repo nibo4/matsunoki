@@ -9,7 +9,6 @@ pub enum ResolveError {
     Unexpected(#[from] anyhow::Error),
 }
 
-#[cfg_attr(test, mockall::automock)]
 #[async_trait]
 pub trait Repository<I: Identifier, T: AggregateRoot<I>> {
     async fn resolve(&self, id: &I) -> Result<Option<T>, ResolveError>;

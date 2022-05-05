@@ -1,3 +1,7 @@
+#[cfg(test)]
+use crate::driver::firebase_auth::MockFirebaseAuthDriver;
+#[cfg(test)]
+use crate::repository::user_repository::MockUserRepository;
 use crate::{
     driver::firebase_auth::{AccessToken, FirebaseAuthDriver, HaveFirebaseAuthDriver, VerifyError},
     model::meta::Entity,
@@ -40,5 +44,20 @@ pub trait SignUpUseCase: HaveUserRepository + HaveFirebaseAuthDriver {
 
         self.user_repository().store(sign_up_user).await?;
         Ok(SignUpUseCaseResult::new())
+    }
+}
+
+#[cfg(test)]
+mockall::mock! {
+    SignUpUseCase {}
+
+    impl HaveUserRepository for SignUpUseCase {
+        type UserRepository = MockUserRepository;
+        fn user_repository(&self) -> MockUserRepository;
+    }
+
+    impl HaveFirebaseAuthDriver for SignUpUseCase {
+        type FirebaseAuthDriver = MockFirebaseAuthDriver;
+        fn firebase_auth(&self) -> MockFirebaseAuthDriver;
     }
 }
