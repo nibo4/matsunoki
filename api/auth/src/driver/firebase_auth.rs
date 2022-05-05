@@ -6,9 +6,9 @@ use thiserror::Error;
 pub enum VerifyError {
     #[error("Token expired.")]
     TokenExpired,
-    #[error("Provider user disabled.(id: ${0})")]
+    #[error("Provider user disabled.(id: {0})")]
     UserDisabled(LocalId),
-    #[error("Provider user not found.(id: ${0})")]
+    #[error("Provider user not found.(id: {0})")]
     UserNotFound(LocalId),
     #[error("Invalidated api key")]
     InvalidatedApiKey,

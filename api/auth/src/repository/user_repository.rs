@@ -10,7 +10,7 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum StoreError {
-    #[error("id: {id} entity is not exist")]
+    #[error("id: {id} entity is already exist")]
     AlreadyExist { id: String },
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
