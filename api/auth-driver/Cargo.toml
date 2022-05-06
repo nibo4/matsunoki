@@ -13,8 +13,9 @@ anyhow = { version = "1.0" }
 thiserror = { version = "1.0" }
 sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "postgres", "offline" ] }
 indoc = { version = "1.0" }
+tokio = {version="1.18.1", features=["full"]}
+reqwest = { version =  "0.11.10", features=["json"] }
 auth = { path = "../auth" }
 
 [dev-dependencies]
-tokio = {version="^1.18.1", features=["full"]}
 mockall = { version = "0.11.0" }
