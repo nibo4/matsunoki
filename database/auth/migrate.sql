@@ -5,6 +5,7 @@ create table login_providers (
 );
 
 create table users (
-  id text not null
+  id integer not null,
+  PRIMARY KEY (id)
 );
 
