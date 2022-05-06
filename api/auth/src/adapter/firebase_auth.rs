@@ -17,6 +17,12 @@ pub enum VerifyError {
     UserNotFound(LocalId),
     #[error("Invalidated api key")]
     InvalidatedApiKey,
+    #[error("Get security token error")]
+    GetSecurityTokenError,
+    #[error("Security token deserialize error")]
+    SecurityTokenDeserializeError,
+    #[error("Token header decode error")]
+    TokenHeaderDecodeError,
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
 }
@@ -50,7 +56,7 @@ mockall::mock! {
 
     impl HaveConfig for FirebaseAuthDriver {
         type Config = MockConfig;
-        fn config(&self) -> MockConfig;
+        fn config(&self) -> &MockConfig;
     }
 
     #[async_trait]
