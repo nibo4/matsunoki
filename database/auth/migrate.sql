@@ -6,7 +6,7 @@ create table login_providers (
 );
 
 create table users (
-  id integer not null,
+  id varchar(255) not null,
   PRIMARY KEY (id)
 );
 
