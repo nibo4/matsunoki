@@ -84,7 +84,7 @@ mod tests {
     };
     use crate::effect::id_generator::{HaveIdGenerator, MockIdGenerator};
     use crate::model::user::{User, UserId};
-    use crate::repository::user_repository::{HaveUserRepository, MockUserRepository, StoreError};
+    use crate::repository::user_repository::{HaveUserRepository, MockUserRepository};
 
     #[tokio::test]
     async fn sign_up_return_ok_when_verify_ok_and_user_repository_return_empty() {
