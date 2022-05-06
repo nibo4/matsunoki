@@ -2,6 +2,11 @@ use async_trait::async_trait;
 use derive_more::{Constructor, Deref, Display};
 use thiserror::Error;
 
+use crate::effect::config::HaveConfig;
+
+#[cfg(test)]
+use crate::effect::config::MockConfig;
+
 #[derive(Error, Debug)]
 pub enum VerifyError {
     #[error("Token expired.")]
@@ -34,10 +39,24 @@ pub struct FullName(pub String);
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
 pub struct AccessToken(pub String);
 
-#[cfg_attr(test, mockall::automock)]
 #[async_trait]
-pub trait FirebaseAuthDriver {
+pub trait FirebaseAuthDriver: HaveConfig {
     async fn verify(&self, token: AccessToken) -> Result<VerifyResult, VerifyError>;
+}
+
+#[cfg(test)]
+mockall::mock! {
+    pub FirebaseAuthDriver {}
+
+    impl HaveConfig for FirebaseAuthDriver {
+        type Config = MockConfig;
+        fn config(&self) -> MockConfig;
+    }
+
+    #[async_trait]
+    impl FirebaseAuthDriver for FirebaseAuthDriver {
+        async fn verify(&self, token: AccessToken) -> Result<VerifyResult, VerifyError>;
+    }
 }
 
 #[cfg_attr(test, mockall::automock(type FirebaseAuthDriver = MockFirebaseAuthDriver;))]

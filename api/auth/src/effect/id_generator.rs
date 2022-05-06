@@ -1,5 +1,3 @@
-use derive_more::Constructor;
-
 #[cfg_attr(test, mockall::automock)]
 pub trait IdGenerator {
     fn generate(&self) -> String;
