@@ -1,4 +1,4 @@
-use crate::driver::firebase_auth::{
+use crate::adapter::firebase_auth::{
     AccessToken, FirebaseAuthDriver, HaveFirebaseAuthDriver, VerifyError,
 };
 use crate::model::login_provider::IdInProvider;
@@ -11,7 +11,7 @@ use derive_more::Constructor;
 use thiserror::Error;
 
 #[cfg(test)]
-use crate::driver::firebase_auth::MockFirebaseAuthDriver;
+use crate::adapter::firebase_auth::MockFirebaseAuthDriver;
 #[cfg(test)]
 use crate::repository::user_repository::MockUserRepository;
 
@@ -70,7 +70,7 @@ mockall::mock! {
 mod tests {
     use super::VerifyUseCase;
 
-    use crate::driver::firebase_auth::{
+    use crate::adapter::firebase_auth::{
         HaveFirebaseAuthDriver, MockFirebaseAuthDriver, VerifyError, VerifyResult,
     };
     use crate::model::user::User;

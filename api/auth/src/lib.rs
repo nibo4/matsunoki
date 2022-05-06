@@ -1,5 +1,5 @@
 pub mod ability;
-pub mod driver;
+pub mod adapter;
 pub mod effect;
 pub mod model;
 pub mod repository;

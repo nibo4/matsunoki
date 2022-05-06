@@ -1,6 +1,6 @@
 #[cfg(test)]
-use crate::driver::firebase_auth::MockFirebaseAuthDriver;
-use crate::driver::firebase_auth::{
+use crate::adapter::firebase_auth::MockFirebaseAuthDriver;
+use crate::adapter::firebase_auth::{
     AccessToken, FirebaseAuthDriver, HaveFirebaseAuthDriver, VerifyError,
 };
 use crate::effect::id_generator::{HaveIdGenerator, IdGenerator};
@@ -78,7 +78,7 @@ mockall::mock! {
 #[cfg(test)]
 mod tests {
     use super::SignUpUseCase;
-    use crate::driver::firebase_auth::{
+    use crate::adapter::firebase_auth::{
         FullName, HaveFirebaseAuthDriver, LocalId, MockFirebaseAuthDriver, VerifyError,
         VerifyResult,
     };
