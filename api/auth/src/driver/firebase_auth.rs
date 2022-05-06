@@ -16,19 +16,19 @@ pub enum VerifyError {
     Unexpected(#[from] anyhow::Error),
 }
 
-#[derive(Debug, Constructor, Clone)]
+#[derive(Debug, Constructor, Clone, Default)]
 pub struct VerifyResult {
     pub uid: LocalId,
     pub full_name: FullName,
 }
 
-#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
+#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display, Default)]
 pub struct LocalId(pub String);
 
-#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
+#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display, Default)]
 pub struct FederatedId(pub String);
 
-#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display)]
+#[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref, Display, Default)]
 pub struct FullName(pub String);
 
 #[derive(Debug, Constructor, Clone, PartialEq, Eq, Deref)]
