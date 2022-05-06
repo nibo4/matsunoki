@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec sqlite3def -f $(dirname $0)/../database/development.db
