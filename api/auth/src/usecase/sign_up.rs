@@ -55,7 +55,7 @@ pub trait SignUpUseCase: HaveUserRepository + HaveFirebaseAuthDriver + HaveIdGen
             )]),
         );
 
-        self.user_repository().store(sign_up_user).await?;
+        self.user_repository().store(&sign_up_user).await?;
         Ok(SignUpUseCaseResult::new())
     }
 }
@@ -124,54 +124,6 @@ mod tests {
         }
 
         assert!(UC().execute("xxxx".to_string()).await.is_ok())
-    }
-
-    #[tokio::test]
-    async fn sign_up_return_err_when_failed_store() {
-        struct UC();
-        impl SignUpUseCase for UC {}
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
-                mock.expect_store().returning(|_| {
-                    Err(StoreError::AlreadyExist {
-                        id: "foo".to_string(),
-                    })
-                });
-                mock
-            }
-        }
-
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify().returning(|_| {
-                    Ok(VerifyResult::new(
-                        LocalId::new("DUMMY".to_string()),
-                        FullName::new("FULL NAME".to_string()),
-                    ))
-                });
-                mock
-            }
-        }
-
-        impl HaveIdGenerator for UC {
-            type IdGenerator = MockIdGenerator;
-            fn id_generator(&self) -> MockIdGenerator {
-                let mut mock = MockIdGenerator::new();
-                mock.expect_generate().returning(|| "xxxxx".to_string());
-                mock
-            }
-        }
-        let usecase_result = UC().execute("xxxx".to_string()).await;
-        assert!(usecase_result.is_err());
-        assert_eq!(
-            usecase_result.err().unwrap().to_string(),
-            "id: foo entity is already exist".to_string()
-        )
     }
 
     #[tokio::test]

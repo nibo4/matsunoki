@@ -11,23 +11,21 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum StoreError {
-    #[error("id: {id} entity is already exist")]
-    AlreadyExist { id: String },
+    #[error("{kind} is unsupported provider kind")]
+    UnSupportedProviderKind { kind: String },
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
 }
 
 #[derive(Error, Debug)]
 pub enum FilterByIdInProviderError {
-    #[error("id: {id} entity is already exist")]
-    AlreadyExist { id: String },
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
 }
 
 #[async_trait]
 pub trait UserRepository: Repository<UserId, User> {
-    async fn store(&self, u: User) -> Result<(), StoreError>;
+    async fn store(&self, u: &User) -> Result<(), StoreError>;
     async fn find_by_id_in_provider(
         &self,
         id_in_provider: &IdInProvider,
@@ -51,6 +49,6 @@ mock! {
     #[async_trait]
     impl UserRepository for UserRepository {
         async fn find_by_id_in_provider(&self, id_in_provider: &IdInProvider) -> Result<Option<User>, FilterByIdInProviderError>;
-        async fn store(&self, u: User) -> Result<(), StoreError>;
+        async fn store(&self, u: &User) -> Result<(), StoreError>;
     }
 }

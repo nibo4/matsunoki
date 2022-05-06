@@ -22,6 +22,14 @@ impl TryFrom<String> for ProviderKind {
     }
 }
 
+impl From<&ProviderKind> for String {
+    fn from(k: &ProviderKind) -> Self {
+        match k {
+            ProviderKind::Google => "Google".to_string(),
+        }
+    }
+}
+
 impl Default for ProviderKind {
     fn default() -> Self {
         Self::Google

@@ -12,6 +12,7 @@ async-trait = { version = "0.1.53" }
 anyhow = { version = "1.0" }
 thiserror = { version = "1.0" }
 sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "postgres", "offline" ] }
+indoc = { version = "1.0" }
 auth = { path = "../auth" }
 
 [dev-dependencies]

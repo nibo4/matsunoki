@@ -3,9 +3,10 @@ use async_trait::async_trait;
 use auth::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
 use auth::model::user::{User, UserId};
 use auth::repository::meta::{Repository, ResolveError};
-use auth::repository::user_repository::UserRepository;
+use auth::repository::user_repository::{FilterByIdInProviderError, StoreError, UserRepository};
 use derive_more::Constructor;
-use sqlx::{query_as, PgPool};
+use indoc::indoc;
+use sqlx::{query, query_as, PgPool, Transaction};
 
 use crate::db_conn::HaveDBConnection;
 
@@ -29,6 +30,7 @@ struct UserRow {
 struct LoginProviderRow {
     pub kind: String,
     pub id_in_provider: String,
+    pub user_id: String,
 }
 
 impl TryFrom<LoginProviderRow> for LoginProvider {
@@ -40,6 +42,17 @@ impl TryFrom<LoginProviderRow> for LoginProvider {
         ))
     }
 }
+
+impl TryFrom<&LoginProviderRow> for LoginProvider {
+    type Error = anyhow::Error;
+    fn try_from(x: &LoginProviderRow) -> Result<Self, Self::Error> {
+        Ok(Self::new(
+            ProviderKind::try_from(x.kind.clone()).context("ProviderKind")?,
+            IdInProvider::new(x.id_in_provider.clone()),
+        ))
+    }
+}
+
 #[async_trait]
 impl<'a> Repository<UserId, User> for PostgresUserRepository<'a> {
     async fn resolve(&self, id: &UserId) -> Result<Option<User>, ResolveError> {
@@ -69,6 +82,73 @@ impl<'a> Repository<UserId, User> for PostgresUserRepository<'a> {
     }
 }
 
+#[async_trait]
+impl<'a> UserRepository for PostgresUserRepository<'a> {
+    async fn find_by_id_in_provider(
+        &self,
+        id_in_provider: &IdInProvider,
+    ) -> Result<Option<User>, FilterByIdInProviderError> {
+        let provider_rows = query_as::<_, LoginProviderRow>(
+            "SELECT * FROM login_providers WHERE id_in_provider=$1",
+        )
+        .bind(&id_in_provider.0)
+        .fetch_all(self.db_connection())
+        .await
+        .context("Failed execute query")?;
+        let first_provider_row = match provider_rows.get(0) {
+            Some(r) => r,
+            None => return Ok(None),
+        };
+        let user = match query_as::<_, UserRow>("SELECT * FROM users WHERE id=$1")
+            .bind(&first_provider_row.user_id)
+            .fetch_optional(self.db_connection())
+            .await
+            .context("Failed find user query")?
+        {
+            Some(u) => u,
+            None => return Ok(None),
+        };
+        let providers = provider_rows
+            .iter()
+            .map(|row| LoginProvider::try_from(row))
+            .collect::<Result<Vec<LoginProvider>, anyhow::Error>>()?;
+        Ok(Some(User::new(UserId::new(user.id), Some(providers))))
+    }
+
+    async fn store(&self, u: &User) -> Result<(), StoreError> {
+        let mut transaction = self
+            .db_connection()
+            .begin()
+            .await
+            .context("failed get context")?;
+        for login_provider in u.providers.iter() {
+            query(indoc! {"
+                INSERT INTO login_providers (user_id, kind, id_in_provider, updated_at) VALUES ($1, $2, $3, NOW())
+                ON CONFRICT ON CONSTRAINT login_providers_pkey
+                DO UPDATE SET user_id=$1, kind=$2, id_in_provider=$3, updated_at=NOW();
+            "})
+                .bind(&u.id.0)
+                .bind(String::from(&login_provider.kind))
+                .bind(&login_provider.id_in_provider.0)
+                .execute(&mut transaction).await.context("failed login_provider store")?;
+        }
+        query(indoc! {"
+            INSERT INTO users (user_id, updated_at) VALUES ($1, NOW())
+            ON CONFRICT ON CONSTRAINT login_providers_pkey
+            DO UPDATE SET user_id=$1, updated_at=NOW();
+        "})
+        .bind(u.id.0.clone())
+        .execute(&mut transaction)
+        .await
+        .context("failed user store")?;
+        transaction
+            .commit()
+            .await
+            .context("failed commit postgres_user_repository store")?;
+        Ok(())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::PostgresUserRepository;
@@ -80,7 +160,7 @@ mod tests {
     async fn postgres_user_repository_resolve_return_to_user() {
         let db_conn = TestDBConnection::default().await;
         let repo = PostgresUserRepository::new(&db_conn.conn);
-        sqlx::query("INSERT INTO users (id) VALUES ($1);")
+        sqlx::query("INSERT INTO users (id, updated_at) VALUES ($1, NOW());")
             .bind("foo")
             .execute(&db_conn.conn)
             .await
