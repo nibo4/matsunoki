@@ -1,13 +1,15 @@
 #[cfg(test)]
 use crate::driver::firebase_auth::MockFirebaseAuthDriver;
+use crate::driver::firebase_auth::{
+    AccessToken, FirebaseAuthDriver, HaveFirebaseAuthDriver, VerifyError,
+};
+use crate::effect::id_generator::{HaveIdGenerator, IdGenerator};
+use crate::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
+use crate::model::user::{User, UserId};
 #[cfg(test)]
 use crate::repository::user_repository::MockUserRepository;
-use crate::{
-    driver::firebase_auth::{AccessToken, FirebaseAuthDriver, HaveFirebaseAuthDriver, VerifyError},
-    model::meta::Entity,
-    model::user::{User, UserId},
-    repository::meta::{Repository, ResolveError},
-    repository::user_repository::{HaveUserRepository, StoreError, UserRepository},
+use crate::repository::user_repository::{
+    FilterByIdInProviderError, HaveUserRepository, StoreError, UserRepository,
 };
 use async_trait::async_trait;
 use derive_more::Constructor;
@@ -21,7 +23,7 @@ pub enum SignUpUseCaseError {
     #[error(transparent)]
     VerifyFailed(#[from] VerifyError),
     #[error(transparent)]
-    ResolveError(#[from] ResolveError),
+    ResolveError(#[from] FilterByIdInProviderError),
     #[error(transparent)]
     StoreError(#[from] StoreError),
     #[error("User is already exist. (id: {0})")]
@@ -31,16 +33,27 @@ pub enum SignUpUseCaseError {
 }
 
 #[async_trait]
-pub trait SignUpUseCase: HaveUserRepository + HaveFirebaseAuthDriver {
+pub trait SignUpUseCase: HaveUserRepository + HaveFirebaseAuthDriver + HaveIdGenerator {
     async fn execute(&self, token: String) -> Result<SignUpUseCaseResult, SignUpUseCaseError> {
         let verify_result = self.firebase_auth().verify(AccessToken::new(token)).await?;
-        let user_id = UserId::new(verify_result.uid.0);
+        let id_in_provider = IdInProvider::new(verify_result.uid.0);
 
-        if let Some(user) = self.user_repository().resolve(&user_id).await? {
-            return Err(SignUpUseCaseError::AlreadyExist(user.id().0.clone()));
+        if self
+            .user_repository()
+            .find_by_id_in_provider(&id_in_provider)
+            .await?
+            .is_some()
+        {
+            return Err(SignUpUseCaseError::AlreadyExist(id_in_provider.0.clone()));
         }
 
-        let sign_up_user = User::new(user_id);
+        let sign_up_user = User::new(
+            UserId::new(self.id_generator().generate()),
+            Some(vec![LoginProvider::new(
+                ProviderKind::Google,
+                id_in_provider,
+            )]),
+        );
 
         self.user_repository().store(sign_up_user).await?;
         Ok(SignUpUseCaseResult::new())
@@ -66,9 +79,10 @@ mockall::mock! {
 mod tests {
     use super::SignUpUseCase;
     use crate::driver::firebase_auth::{
-        FirebaseAuthDriver, FullName, HaveFirebaseAuthDriver, LocalId, MockFirebaseAuthDriver,
-        VerifyError, VerifyResult,
+        FullName, HaveFirebaseAuthDriver, LocalId, MockFirebaseAuthDriver, VerifyError,
+        VerifyResult,
     };
+    use crate::effect::id_generator::{HaveIdGenerator, MockIdGenerator};
     use crate::model::user::{User, UserId};
     use crate::repository::user_repository::{HaveUserRepository, MockUserRepository, StoreError};
 
@@ -80,7 +94,7 @@ mod tests {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
                 let mut mock = MockUserRepository::new();
-                mock.expect_resolve().returning(|_| Ok(None));
+                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
                 mock.expect_store().returning(|_| Ok(()));
                 mock
             }
@@ -100,6 +114,15 @@ mod tests {
             }
         }
 
+        impl HaveIdGenerator for UC {
+            type IdGenerator = MockIdGenerator;
+            fn id_generator(&self) -> MockIdGenerator {
+                let mut mock = MockIdGenerator::new();
+                mock.expect_generate().returning(|| "xxxxx".to_string());
+                mock
+            }
+        }
+
         assert!(UC().execute("xxxx".to_string()).await.is_ok())
     }
 
@@ -111,7 +134,7 @@ mod tests {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
                 let mut mock = MockUserRepository::new();
-                mock.expect_resolve().returning(|_| Ok(None));
+                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
                 mock.expect_store().returning(|_| {
                     Err(StoreError::AlreadyExist {
                         id: "foo".to_string(),
@@ -135,6 +158,14 @@ mod tests {
             }
         }
 
+        impl HaveIdGenerator for UC {
+            type IdGenerator = MockIdGenerator;
+            fn id_generator(&self) -> MockIdGenerator {
+                let mut mock = MockIdGenerator::new();
+                mock.expect_generate().returning(|| "xxxxx".to_string());
+                mock
+            }
+        }
         let usecase_result = UC().execute("xxxx".to_string()).await;
         assert!(usecase_result.is_err());
         assert_eq!(
@@ -151,7 +182,7 @@ mod tests {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
                 let mut mock = MockUserRepository::new();
-                mock.expect_resolve().returning(|_| Ok(None));
+                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
                 mock.expect_store().returning(|_| Ok(()));
                 mock
             }
@@ -167,6 +198,14 @@ mod tests {
             }
         }
 
+        impl HaveIdGenerator for UC {
+            type IdGenerator = MockIdGenerator;
+            fn id_generator(&self) -> MockIdGenerator {
+                let mut mock = MockIdGenerator::new();
+                mock.expect_generate().returning(|| "xxxxx".to_string());
+                mock
+            }
+        }
         let usecase_result = UC().execute("xxxx".to_string()).await;
         assert!(usecase_result.is_err());
         assert_eq!(
@@ -183,7 +222,7 @@ mod tests {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
                 let mut mock = MockUserRepository::new();
-                mock.expect_resolve().returning(|_| Ok(None));
+                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
                 mock.expect_store().returning(|_| Ok(()));
                 mock
             }
@@ -199,6 +238,14 @@ mod tests {
             }
         }
 
+        impl HaveIdGenerator for UC {
+            type IdGenerator = MockIdGenerator;
+            fn id_generator(&self) -> MockIdGenerator {
+                let mut mock = MockIdGenerator::new();
+                mock.expect_generate().returning(|| "xxxxx".to_string());
+                mock
+            }
+        }
         let usecase_result = UC().execute("xxxx".to_string()).await;
         assert!(usecase_result.is_err());
         assert_eq!(
@@ -215,12 +262,20 @@ mod tests {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
                 let mut mock = MockUserRepository::new();
-                mock.expect_resolve().returning(|_| Ok(None));
+                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
                 mock.expect_store().returning(|_| Ok(()));
                 mock
             }
         }
 
+        impl HaveIdGenerator for UC {
+            type IdGenerator = MockIdGenerator;
+            fn id_generator(&self) -> MockIdGenerator {
+                let mut mock = MockIdGenerator::new();
+                mock.expect_generate().returning(|| "xxxxx".to_string());
+                mock
+            }
+        }
         impl HaveFirebaseAuthDriver for UC {
             type FirebaseAuthDriver = MockFirebaseAuthDriver;
             fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
@@ -242,12 +297,14 @@ mod tests {
     #[tokio::test]
     async fn sign_up_return_err_when_invalidalidated_key() {
         struct UC();
+
         impl SignUpUseCase for UC {}
+
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
                 let mut mock = MockUserRepository::new();
-                mock.expect_resolve().returning(|_| Ok(None));
+                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
                 mock.expect_store().returning(|_| Ok(()));
                 mock
             }
@@ -263,6 +320,14 @@ mod tests {
             }
         }
 
+        impl HaveIdGenerator for UC {
+            type IdGenerator = MockIdGenerator;
+            fn id_generator(&self) -> MockIdGenerator {
+                let mut mock = MockIdGenerator::new();
+                mock.expect_generate().returning(|| "xxxxx".to_string());
+                mock
+            }
+        }
         let usecase_result = UC().execute("xxxx".to_string()).await;
         assert!(usecase_result.is_err());
         assert_eq!(
@@ -279,8 +344,8 @@ mod tests {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
                 let mut mock = MockUserRepository::new();
-                mock.expect_resolve()
-                    .returning(|_| Ok(Some(User::new(UserId::new("foo".to_string())))));
+                mock.expect_find_by_id_in_provider()
+                    .returning(|_| Ok(Some(User::new(UserId::new("foo".to_string()), None))));
                 mock.expect_store().returning(|_| Ok(()));
                 mock
             }
@@ -300,6 +365,15 @@ mod tests {
             }
         }
 
+        impl HaveIdGenerator for UC {
+            type IdGenerator = MockIdGenerator;
+
+            fn id_generator(&self) -> Self::IdGenerator {
+                let mut mock = MockIdGenerator::new();
+                mock.expect_generate().returning(|| "xxxxx".to_string());
+                mock
+            }
+        }
         let usecase_result = UC().execute("xxxx".to_string()).await;
         assert!(usecase_result.is_err());
         assert_eq!(

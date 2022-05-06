@@ -1,3 +1,4 @@
+use crate::model::login_provider::IdInProvider;
 use crate::model::user::{User, UserId};
 use crate::repository::meta::Repository;
 #[cfg(test)]
@@ -16,9 +17,21 @@ pub enum StoreError {
     Unexpected(#[from] anyhow::Error),
 }
 
+#[derive(Error, Debug)]
+pub enum FilterByIdInProviderError {
+    #[error("id: {id} entity is already exist")]
+    AlreadyExist { id: String },
+    #[error(transparent)]
+    Unexpected(#[from] anyhow::Error),
+}
+
 #[async_trait]
 pub trait UserRepository: Repository<UserId, User> {
     async fn store(&self, u: User) -> Result<(), StoreError>;
+    async fn find_by_id_in_provider(
+        &self,
+        id_in_provider: &IdInProvider,
+    ) -> Result<Option<User>, FilterByIdInProviderError>;
 }
 
 pub trait HaveUserRepository {
@@ -37,6 +50,7 @@ mock! {
 
     #[async_trait]
     impl UserRepository for UserRepository {
+        async fn find_by_id_in_provider(&self, id_in_provider: &IdInProvider) -> Result<Option<User>, FilterByIdInProviderError>;
         async fn store(&self, u: User) -> Result<(), StoreError>;
     }
 }
