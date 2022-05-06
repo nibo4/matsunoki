@@ -4,8 +4,10 @@ services:
     image: postgres:14
     # image: hartmutcouk/pg-repack-docker:1.4.6
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: ${AUTH_DB_NAME}
     volumes:
       - ./.docker/postgresql/data:/var/lib/postgresql/data
     ports:

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-exec sqlite3def -f $(dirname $0)/../database/auth/migrate.sql $(dirname $0)/../database/auth.db
+exec psqldef -f $(dirname $0)/../database/auth/migrate.sql -U $AUTH_DB_USER -W $AUTH_DB_PASSWORD -h $AUTH_DB_HOST -p $AUTH_DB_PORT $AUTH_DB_NAME
