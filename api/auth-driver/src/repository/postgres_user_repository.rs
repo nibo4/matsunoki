@@ -6,7 +6,7 @@ use auth::repository::meta::{Repository, ResolveError};
 use auth::repository::user_repository::{FilterByIdInProviderError, StoreError, UserRepository};
 use derive_more::Constructor;
 use indoc::indoc;
-use sqlx::{query, query_as, PgPool, Transaction};
+use sqlx::{query, query_as, PgPool};
 
 use crate::db_conn::HaveDBConnection;
 
@@ -124,7 +124,7 @@ impl<'a> UserRepository for PostgresUserRepository<'a> {
         for login_provider in u.providers.iter() {
             query(indoc! {"
                 INSERT INTO login_providers (user_id, kind, id_in_provider, updated_at) VALUES ($1, $2, $3, NOW())
-                ON CONFRICT ON CONSTRAINT login_providers_pkey
+                ON CONFLICT ON CONSTRAINT login_providers_pkey
                 DO UPDATE SET user_id=$1, kind=$2, id_in_provider=$3, updated_at=NOW();
             "})
                 .bind(&u.id.0)
@@ -133,9 +133,9 @@ impl<'a> UserRepository for PostgresUserRepository<'a> {
                 .execute(&mut transaction).await.context("failed login_provider store")?;
         }
         query(indoc! {"
-            INSERT INTO users (user_id, updated_at) VALUES ($1, NOW())
-            ON CONFRICT ON CONSTRAINT login_providers_pkey
-            DO UPDATE SET user_id=$1, updated_at=NOW();
+            INSERT INTO users (id, updated_at) VALUES ($1, NOW())
+            ON CONFLICT ON CONSTRAINT users_pkey
+            DO UPDATE SET id=$1, updated_at=NOW();
         "})
         .bind(u.id.0.clone())
         .execute(&mut transaction)
@@ -153,8 +153,11 @@ impl<'a> UserRepository for PostgresUserRepository<'a> {
 mod tests {
     use super::PostgresUserRepository;
     use crate::db_conn::{TestDBConnection, TestDBInterface};
+    use auth::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
     use auth::model::user::{User, UserId};
+
     use auth::repository::meta::Repository;
+    use auth::repository::user_repository::UserRepository;
     #[tokio::test]
     #[ignore]
     async fn postgres_user_repository_resolve_return_to_user() {
@@ -185,5 +188,43 @@ mod tests {
         let result = repo.resolve(&UserId::new("foo".to_string())).await.unwrap();
 
         assert!(result.is_none());
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn postgres_user_repository_find_by_id_in_filter_return_to_user() {
+        let db_conn = TestDBConnection::default().await;
+        let repo = PostgresUserRepository::new(&db_conn.conn);
+        let login_providers = vec![LoginProvider::new(
+            ProviderKind::Google,
+            IdInProvider::new("test1".to_string()),
+        )];
+        let user = User::new(UserId::new("dummy1".to_string()), Some(login_providers));
+        repo.store(&user).await.unwrap();
+        let find_result = repo
+            .find_by_id_in_provider(&IdInProvider::new("test1".to_string()))
+            .await;
+        db_conn.flush().await;
+
+        assert_eq!(find_result.unwrap(), Some(user));
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn postgres_user_repository_find_by_id_in_filter_return_to_none() {
+        let db_conn = TestDBConnection::default().await;
+        let repo = PostgresUserRepository::new(&db_conn.conn);
+        let login_providers = vec![LoginProvider::new(
+            ProviderKind::Google,
+            IdInProvider::new("test1".to_string()),
+        )];
+        let user = User::new(UserId::new("dummy1".to_string()), Some(login_providers));
+        repo.store(&user).await.unwrap();
+        let find_result = repo
+            .find_by_id_in_provider(&IdInProvider::new("test2".to_string()))
+            .await;
+        db_conn.flush().await;
+
+        assert_eq!(find_result.unwrap(), None);
     }
 }
