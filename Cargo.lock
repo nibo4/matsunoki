@@ -42,6 +42,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "auth-driver"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "chrono",
+ "derive_more",
+ "mockall",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "auth-http"
 version = "0.1.0"
 
