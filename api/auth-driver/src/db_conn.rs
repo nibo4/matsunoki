@@ -25,14 +25,14 @@ pub struct Table(pub String);
 #[cfg(test)]
 #[async_trait::async_trait]
 pub trait TestDBInterface {
-    async fn clean(&self);
+    async fn flush(&self);
     async fn default() -> Self;
 }
 
 #[cfg(test)]
 #[async_trait::async_trait]
 impl TestDBInterface for TestDBConnection {
-    async fn clean(&self) {
+    async fn flush(&self) {
         let tables = sqlx::query_as::<_, Table>("SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema NOT IN ('pg_catalog', 'information_schema');").fetch_all(self.db_connection()).await.unwrap();
         for table in tables {
             sqlx::query(format!("DELETE FROM {};", &table.0).as_str())
@@ -48,7 +48,7 @@ impl TestDBInterface for TestDBConnection {
             .await
             .unwrap();
         let conn = TestDBConnection { conn: pool };
-        conn.clean().await;
+        conn.flush().await;
         conn
     }
 }

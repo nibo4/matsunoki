@@ -172,7 +172,7 @@ mod tests {
             .unwrap()
             .unwrap();
 
-        db_conn.clean().await;
+        db_conn.flush().await;
 
         assert_eq!(user, expected_user);
     }
