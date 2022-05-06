@@ -11,6 +11,7 @@ chrono = { version = "0.4.19" }
 async-trait = { version = "0.1.53" }
 anyhow = { version = "1.0" }
 thiserror = { version = "1.0" }
+sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "postgres" ] }
 
 auth = { path = "../auth" }
 
