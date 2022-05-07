@@ -11,6 +11,7 @@ chrono = { version = "0.4.19" }
 async-trait = { version = "0.1.53" }
 anyhow = { version = "1.0" }
 thiserror = { version = "1.0" }
+serde = {version = "1.0", features = ["derive"] }
 
 [dev-dependencies]
 tokio = {version="^1.18.1", features=["macros", "rt"]}

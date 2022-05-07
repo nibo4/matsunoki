@@ -1,14 +1,15 @@
 use crate::model::meta::{AggregateRoot, Entity, Identifier};
 use derive_more::{Constructor, Deref};
+use serde::Serialize;
 
 use super::login_provider::LoginProvider;
 
-#[derive(Debug, Clone, PartialEq, Eq, Deref, Constructor, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Deref, Constructor, Default, Serialize)]
 pub struct UserId(pub String);
 
 impl Identifier for UserId {}
 
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
 pub struct User {
     pub id: UserId,
     pub providers: Vec<LoginProvider>,

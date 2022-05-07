@@ -15,10 +15,14 @@ use crate::repository::user_repository::{
 };
 use async_trait::async_trait;
 use derive_more::Constructor;
+use serde::Serialize;
 use thiserror::Error;
 
-#[derive(Debug, Constructor)]
-pub struct SignUpUseCaseResult {}
+#[derive(Debug, Constructor, Serialize)]
+pub struct SignUpUseCaseResult {
+    user_id: UserId,
+    name: String,
+}
 
 #[derive(Error, Debug)]
 pub enum SignUpUseCaseError {
@@ -58,7 +62,10 @@ pub trait SignUpUseCase: HaveUserRepository + HaveFirebaseAuthDriver + HaveIdGen
         );
 
         self.user_repository().store(&sign_up_user).await?;
-        Ok(SignUpUseCaseResult::new())
+        Ok(SignUpUseCaseResult::new(
+            sign_up_user.id,
+            verify_result.full_name.0,
+        ))
     }
 }
 impl<T: HaveUserRepository + HaveFirebaseAuthDriver + HaveIdGenerator> SignUpUseCase for T {}

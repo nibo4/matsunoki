@@ -1,7 +1,8 @@
 use derive_more::Constructor;
+use serde::Serialize;
 use thiserror::Error;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum ProviderKind {
     Google,
 }
@@ -36,10 +37,10 @@ impl Default for ProviderKind {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Constructor, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Constructor, Default, Serialize)]
 pub struct IdInProvider(pub String);
 
-#[derive(Debug, Clone, PartialEq, Eq, Constructor, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Constructor, Default, Serialize)]
 pub struct LoginProvider {
     pub kind: ProviderKind,
     pub id_in_provider: IdInProvider,
