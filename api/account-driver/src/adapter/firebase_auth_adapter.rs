@@ -1,10 +1,10 @@
+use account::adapter::firebase_auth::FullName;
+use account::adapter::firebase_auth::LocalId;
+use account::adapter::firebase_auth::{AccessToken, FirebaseAuthDriver, VerifyError, VerifyResult};
+use account::effect::config::{Config, HaveConfig};
 use anyhow::anyhow;
 use anyhow::Context;
 use async_trait::async_trait;
-use auth::adapter::firebase_auth::FullName;
-use auth::adapter::firebase_auth::LocalId;
-use auth::adapter::firebase_auth::{AccessToken, FirebaseAuthDriver, VerifyError, VerifyResult};
-use auth::effect::config::{Config, HaveConfig};
 use derive_more::Constructor;
 use jsonwebtoken::jwk::{AlgorithmParameters, JwkSet};
 use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};

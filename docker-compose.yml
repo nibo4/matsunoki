@@ -1,25 +1,25 @@
 version: '3.7'
 services:
-  auth_development:
+  account_development:
     image: postgres:14
     # image: hartmutcouk/pg-repack-docker:1.4.6
     environment:
-      POSTGRES_USER: ${AUTH_DB_USER}
-      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_USER: ${ACCOUNT_DB_USER}
+      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+      POSTGRES_HOST_ACCOUNT_METHOD: trust
+      POSTGRES_DB: ${ACCOUNT_DB_NAME}
     volumes:
       - ./.docker/postgresql/data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
-  auth_test:
+  account_test:
     image: postgres:14
     # image: hartmutcouk/pg-repack-docker:1.4.6
     environment:
-      POSTGRES_USER: ${AUTH_DB_USER}
-      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_USER: ${ACCOUNT_DB_USER}
+      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+      POSTGRES_HOST_ACCOUNT_METHOD: trust
+      POSTGRES_DB: ${ACCOUNT_DB_NAME}
     volumes:
       - ./.docker/postgresql/data:/var/lib/postgresql/data
     ports:
