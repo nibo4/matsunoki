@@ -58,12 +58,12 @@ mockall::mock! {
 
     impl HaveUserRepository for VerifyUseCase {
         type UserRepository = MockUserRepository;
-        fn user_repository(&self) -> MockUserRepository;
+        fn user_repository(&self) -> &MockUserRepository;
     }
 
     impl HaveFirebaseAuthDriver for VerifyUseCase {
         type FirebaseAuthDriver = MockFirebaseAuthDriver;
-        fn firebase_auth(&self) -> MockFirebaseAuthDriver;
+        fn firebase_auth(&self) -> &MockFirebaseAuthDriver;
     }
 }
 
@@ -76,88 +76,81 @@ mod tests {
     };
     use crate::model::user::User;
     use crate::repository::user_repository::{HaveUserRepository, MockUserRepository};
+    use derive_more::Constructor;
+
+    #[derive(Constructor)]
+    struct UC {
+        user_repo: MockUserRepository,
+        firebase_auth: MockFirebaseAuthDriver,
+    }
+    impl HaveUserRepository for UC {
+        type UserRepository = MockUserRepository;
+        fn user_repository(&self) -> &Self::UserRepository {
+            &self.user_repo
+        }
+    }
+
+    impl HaveFirebaseAuthDriver for UC {
+        type FirebaseAuthDriver = MockFirebaseAuthDriver;
+        fn firebase_auth(&self) -> &Self::FirebaseAuthDriver {
+            &self.firebase_auth
+        }
+    }
 
     #[tokio::test]
     async fn verify_use_case_return_to_user_when_ok() {
-        struct UC;
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider()
-                    .returning(|_| Ok(Some(User::default())));
-                mock
-            }
-        }
+        let mut user_repository = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify()
-                    .returning(|_| Ok(VerifyResult::default()));
-                mock
-            }
-        }
+        user_repository
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(Some(User::default())));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Ok(VerifyResult::default()));
 
-        assert!(UC.execute("xxx").await.is_ok());
+        assert!(UC::new(user_repository, firebase_auth)
+            .execute("xxx")
+            .await
+            .is_ok());
     }
 
     #[tokio::test]
     async fn verify_use_case_return_to_err_when_user_not_found() {
-        struct UC;
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
-                mock
-            }
-        }
+        let mut user_repository = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify()
-                    .returning(|_| Ok(VerifyResult::default()));
-                mock
-            }
-        }
+        user_repository
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(None));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Ok(VerifyResult::default()));
 
-        assert!(UC.execute("xxx").await.is_err());
+        let usecase_result = UC::new(user_repository, firebase_auth).execute("xxx").await;
+        assert!(usecase_result.is_err());
         assert_eq!(
-            UC.execute("xxx").await.unwrap_err().to_string(),
+            usecase_result.unwrap_err().to_string(),
             "User is not found. ".to_string()
         )
     }
 
     #[tokio::test]
     async fn verify_use_case_return_to_err_when_verify_error() {
-        struct UC;
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider()
-                    .returning(|_| Ok(Some(User::default())));
-                mock
-            }
-        }
+        let mut user_repository = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify()
-                    .returning(|_| Err(VerifyError::TokenExpired));
-                mock
-            }
-        }
+        user_repository
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(Some(User::default())));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Err(VerifyError::TokenExpired));
 
-        assert!(UC.execute("xxx").await.is_err());
+        let usecase_result = UC::new(user_repository, firebase_auth).execute("xxx").await;
+        assert!(usecase_result.is_err());
         assert_eq!(
-            UC.execute("xxx").await.unwrap_err().to_string(),
+            usecase_result.unwrap_err().to_string(),
             "Token expired.".to_string()
         )
     }

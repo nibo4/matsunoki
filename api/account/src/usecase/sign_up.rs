@@ -125,9 +125,9 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_ok_when_verify_ok_and_user_repository_return_empty() {
-        let user_repo = MockUserRepository::new();
-        let firebase_auth = MockFirebaseAuthDriver::new();
-        let id_gen = MockIdGenerator::new();
+        let mut user_repo = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
+        let mut id_gen = MockIdGenerator::new();
 
         user_repo
             .expect_find_by_id_in_provider()
@@ -148,9 +148,9 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_token_expire() {
-        let user_repo = MockUserRepository::new();
-        let firebase_auth = MockFirebaseAuthDriver::new();
-        let id_gen = MockIdGenerator::new();
+        let mut user_repo = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
+        let mut id_gen = MockIdGenerator::new();
 
         user_repo
             .expect_find_by_id_in_provider()
@@ -172,9 +172,9 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_user_disabled() {
-        let user_repo = MockUserRepository::new();
-        let firebase_auth = MockFirebaseAuthDriver::new();
-        let id_gen = MockIdGenerator::new();
+        let mut user_repo = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
+        let mut id_gen = MockIdGenerator::new();
 
         user_repo
             .expect_find_by_id_in_provider()
@@ -197,9 +197,9 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_user_not_found() {
-        let user_repo = MockUserRepository::new();
-        let firebase_auth = MockFirebaseAuthDriver::new();
-        let id_gen = MockIdGenerator::new();
+        let mut user_repo = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
+        let mut id_gen = MockIdGenerator::new();
 
         user_repo
             .expect_find_by_id_in_provider()
@@ -222,9 +222,9 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_invalidalidated_key() {
-        let user_repo = MockUserRepository::new();
-        let firebase_auth = MockFirebaseAuthDriver::new();
-        let id_gen = MockIdGenerator::new();
+        let mut user_repo = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
+        let mut id_gen = MockIdGenerator::new();
 
         user_repo
             .expect_find_by_id_in_provider()
@@ -247,9 +247,9 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_already_exist() {
-        let user_repo = MockUserRepository::new();
-        let firebase_auth = MockFirebaseAuthDriver::new();
-        let id_gen = MockIdGenerator::new();
+        let mut user_repo = MockUserRepository::new();
+        let mut firebase_auth = MockFirebaseAuthDriver::new();
+        let mut id_gen = MockIdGenerator::new();
 
         user_repo
             .expect_find_by_id_in_provider()
@@ -257,7 +257,7 @@ mod tests {
         user_repo.expect_store().returning(|_| Ok(()));
         firebase_auth
             .expect_verify()
-            .returning(|_| Err(VerifyError::InvalidatedApiKey));
+            .returning(|_| Ok(VerifyResult::default()));
         id_gen.expect_generate().returning(|| "xxxx".to_string());
 
         let usecase_result = UC::new(user_repo, firebase_auth, id_gen)
