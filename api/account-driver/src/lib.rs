@@ -2,6 +2,7 @@ pub mod adapter;
 pub mod cache;
 pub mod config;
 pub mod db_conn;
+pub mod id_generator;
 pub mod repository;
 
 #[cfg(test)]
