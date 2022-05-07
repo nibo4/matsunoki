@@ -8,6 +8,7 @@ use crate::repository::user_repository::{
 };
 use async_trait::async_trait;
 use derive_more::Constructor;
+use serde::Serialize;
 use thiserror::Error;
 
 #[cfg(test)]
@@ -15,7 +16,7 @@ use crate::adapter::firebase_auth::MockFirebaseAuthDriver;
 #[cfg(test)]
 use crate::repository::user_repository::MockUserRepository;
 
-#[derive(Debug, Constructor)]
+#[derive(Debug, Constructor, Serialize)]
 pub struct VerifyUseCaseResult {
     pub user: User,
 }
@@ -31,7 +32,7 @@ pub enum VerifyUseCaseError {
 }
 
 #[async_trait]
-trait VerifyUseCase: HaveUserRepository + HaveFirebaseAuthDriver {
+pub trait VerifyUseCase: HaveUserRepository + HaveFirebaseAuthDriver {
     async fn execute(&self, token: &str) -> Result<VerifyUseCaseResult, VerifyUseCaseError> {
         let verify_result = self
             .firebase_auth()

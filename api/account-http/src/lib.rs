@@ -13,6 +13,7 @@ pub fn router(kernel: Kernel) -> Router {
     Router::new()
         .route("/hc", get(handler::health_check::health_check_handler))
         .route("/sign_up", post(handler::sign_up::sign_up_handler))
+        .route("/verify", post(handler::verify::verify_handler))
         .layer(AddExtensionLayer::new(kernel))
         .layer(TraceLayer::new_for_http())
 }

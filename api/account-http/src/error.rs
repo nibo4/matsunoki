@@ -15,6 +15,8 @@ pub enum BadRequestKind {
     VerifyFailed,
     #[strum(serialize = "already_exist")]
     AlreadyExist,
+    #[strum(serialize = "user_not_found")]
+    UserNotFound,
 }
 
 #[derive(Debug, Clone, Serialize, Constructor)]
