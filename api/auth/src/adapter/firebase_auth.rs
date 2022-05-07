@@ -23,6 +23,12 @@ pub enum VerifyError {
     SecurityTokenDeserializeError,
     #[error("Token header decode error")]
     TokenHeaderDecodeError,
+    #[error("Token decode error")]
+    DecodeError,
+    #[error("Identify infomation not found")]
+    IdentifyNotFoundError,
+    #[error("Failed get cache store lock")]
+    GetCacheStoreLockError,
     #[error(transparent)]
     Unexpected(#[from] anyhow::Error),
 }

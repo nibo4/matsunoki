@@ -1,4 +1,5 @@
 pub mod adapter;
+pub mod cache;
 pub mod config;
 pub mod db_conn;
 pub mod repository;
