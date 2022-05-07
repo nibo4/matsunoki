@@ -1,6 +1,6 @@
-use auth::adapter::firebase_auth::{AccessToken, FirebaseAuthDriver};
-use auth_driver::adapter::firebase_auth_adapter::*;
-use auth_driver::config::DefaultConfig;
+use account::adapter::firebase_auth::{AccessToken, FirebaseAuthDriver};
+use account_driver::adapter::firebase_auth_adapter::*;
+use account_driver::config::DefaultConfig;
 use std::collections::HashMap;
 use std::env;
 use std::sync::{Arc, Mutex};

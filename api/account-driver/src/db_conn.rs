@@ -44,7 +44,7 @@ impl TestDBInterface for TestDBConnection {
     async fn default() -> Self {
         let pool = PgPoolOptions::new()
             .max_connections(5)
-            .connect("postgres://development:development@localhost:5433/matsunoki-auth")
+            .connect("postgres://development:development@localhost:5433/matsunoki-account")
             .await
             .unwrap();
         let conn = TestDBConnection { conn: pool };

@@ -1,9 +1,9 @@
 use anyhow::Context;
 use async_trait::async_trait;
-use auth::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
-use auth::model::user::{User, UserId};
-use auth::repository::meta::{Repository, ResolveError};
-use auth::repository::user_repository::{FilterByIdInProviderError, StoreError, UserRepository};
+use account::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
+use account::model::user::{User, UserId};
+use account::repository::meta::{Repository, ResolveError};
+use account::repository::user_repository::{FilterByIdInProviderError, StoreError, UserRepository};
 use derive_more::Constructor;
 use indoc::indoc;
 use sqlx::{query, query_as, PgPool};
@@ -153,11 +153,11 @@ impl<'a> UserRepository for PostgresUserRepository<'a> {
 mod tests {
     use super::PostgresUserRepository;
     use crate::db_conn::{TestDBConnection, TestDBInterface};
-    use auth::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
-    use auth::model::user::{User, UserId};
+    use account::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
+    use account::model::user::{User, UserId};
 
-    use auth::repository::meta::Repository;
-    use auth::repository::user_repository::UserRepository;
+    use account::repository::meta::Repository;
+    use account::repository::user_repository::UserRepository;
     #[tokio::test]
     #[ignore]
     async fn postgres_user_repository_resolve_return_to_user() {

@@ -1,4 +1,4 @@
-use auth::effect::config::Config;
+use account::effect::config::Config;
 use derive_more::Constructor;
 
 #[derive(Debug, Constructor)]
