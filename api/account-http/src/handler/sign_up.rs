@@ -17,6 +17,7 @@ use crate::kernel::Kernel;
 #[derive(Serialize, Constructor)]
 pub struct SignUpResponse(SignUpUseCaseResult);
 
+#[tracing::instrument(skip(kernel))]
 pub async fn sign_up_handler(
     kernel: Extension<Kernel>,
     TypedHeader(authorization): TypedHeader<headers::Authorization<Bearer>>,
