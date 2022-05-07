@@ -1,6 +1,7 @@
 #[cfg_attr(test, mockall::automock)]
 pub trait Config {
     fn firebase_project_id(&self) -> &str;
+    fn max_connections(&self) -> &usize;
 }
 
 #[cfg_attr(test, mockall::automock(type Config = MockConfig;))]

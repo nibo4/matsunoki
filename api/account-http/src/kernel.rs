@@ -3,27 +3,26 @@ use account::effect::config::Config;
 use account::effect::id_generator::HaveIdGenerator;
 use account::repository::user_repository::HaveUserRepository;
 use account_driver::adapter::firebase_auth_adapter::DefaultFirebaseAuthAdapter;
+use account_driver::config::DefaultConfig;
 use account_driver::id_generator::UUIDGenerator;
 use account_driver::repository::postgres_user_repository::PostgresUserRepository;
 
+use derive_more::Deref;
 use std::env::var;
 
-pub struct DefaultConfig {
-    firebase_project_id: String,
-}
+#[derive(Debug, Deref)]
+pub struct HttpControllerConfig(DefaultConfig);
 
-impl Config for DefaultConfig {
-    fn firebase_project_id(&self) -> &str {
-        &self.firebase_project_id
-    }
-}
-
-impl Default for DefaultConfig {
+impl Default for HttpControllerConfig {
     fn default() -> Self {
-        Self {
+        Self(DefaultConfig {
             firebase_project_id: var("ACCOUNT_FIREBASE_PROJECT_ID")
                 .expect("env ACCOUNT_FIREBASE_PROJECT_ID is not defined"),
-        }
+            max_connections: var("ACCOUNT_DB_MAX_CONNECTIONS")
+                .expect("env ACCOUNT_DB_MAX_CONNECTIONS is not defined")
+                .parse::<usize>()
+                .expect("env ACCOUNT_DB_MAX_CONNECTIONS is not numeric"),
+        })
     }
 }
 

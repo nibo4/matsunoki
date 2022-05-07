@@ -24,7 +24,7 @@ async fn main() {
             unreachable!("token is not found")
         }
     };
-    let config = DefaultConfig::new(project_id.clone());
+    let config = DefaultConfig::new(project_id.clone(), 5);
     let cache = Arc::new(Mutex::new(HashMap::new()));
     let adapter = DefaultFirebaseAuthAdapter::new(config, cache);
     let verify_result = adapter.verify(AccessToken::new(token.clone())).await;
