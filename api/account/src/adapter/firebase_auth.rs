@@ -2,7 +2,7 @@ use async_trait::async_trait;
 use derive_more::{Constructor, Deref, Display};
 use thiserror::Error;
 
-use crate::effect::config::HaveConfig;
+use crate::effect::config::{Config, HaveConfig};
 
 #[cfg(test)]
 use crate::effect::config::MockConfig;

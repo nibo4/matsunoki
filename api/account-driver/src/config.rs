@@ -1,7 +1,7 @@
 use account::effect::config::Config;
 use derive_more::Constructor;
 
-#[derive(Debug, Constructor)]
+#[derive(Debug, Constructor, Clone)]
 pub struct DefaultConfig {
     firebase_project_id: String,
 }

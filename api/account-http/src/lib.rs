@@ -1,8 +1,9 @@
 use axum::routing::get;
 use axum::Router;
-use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
+use tower_http::trace::TraceLayer;
 
 pub mod handler;
+pub mod kernel;
 pub mod middleware;
 
 pub fn router() -> Router {

@@ -50,11 +50,12 @@ trait VerifyUseCase: HaveUserRepository + HaveFirebaseAuthDriver {
     }
 }
 
+impl<T: HaveUserRepository + HaveFirebaseAuthDriver> VerifyUseCase for T {}
+
 #[cfg(test)]
 mockall::mock! {
     pub VerifyUseCase {}
 
-    impl VerifyUseCase for VerifyUseCase {}
     impl HaveUserRepository for VerifyUseCase {
         type UserRepository = MockUserRepository;
         fn user_repository(&self) -> MockUserRepository;
@@ -79,7 +80,6 @@ mod tests {
     #[tokio::test]
     async fn verify_use_case_return_to_user_when_ok() {
         struct UC;
-        impl VerifyUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
@@ -106,7 +106,6 @@ mod tests {
     #[tokio::test]
     async fn verify_use_case_return_to_err_when_user_not_found() {
         struct UC;
-        impl VerifyUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
@@ -136,7 +135,6 @@ mod tests {
     #[tokio::test]
     async fn verify_use_case_return_to_err_when_verify_error() {
         struct UC;
-        impl VerifyUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {

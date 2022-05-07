@@ -10,12 +10,12 @@ use sqlx::{query, query_as, PgPool};
 
 use crate::db_conn::HaveDBConnection;
 
-#[derive(Constructor, Debug)]
-struct PostgresUserRepository<'a> {
-    conn: &'a PgPool,
+#[derive(Constructor, Debug, Clone)]
+pub struct PostgresUserRepository {
+    conn: PgPool,
 }
 
-impl<'a> HaveDBConnection for PostgresUserRepository<'a> {
+impl HaveDBConnection for PostgresUserRepository {
     fn db_connection(&self) -> &PgPool {
         &self.conn
     }
@@ -54,7 +54,7 @@ impl TryFrom<&LoginProviderRow> for LoginProvider {
 }
 
 #[async_trait]
-impl<'a> Repository<UserId, User> for PostgresUserRepository<'a> {
+impl Repository<UserId, User> for PostgresUserRepository {
     async fn resolve(&self, id: &UserId) -> Result<Option<User>, ResolveError> {
         let user_row = match query_as::<_, UserRow>("SELECT * FROM users where id=$1;")
             .bind(&id.0)
@@ -83,7 +83,7 @@ impl<'a> Repository<UserId, User> for PostgresUserRepository<'a> {
 }
 
 #[async_trait]
-impl<'a> UserRepository for PostgresUserRepository<'a> {
+impl UserRepository for PostgresUserRepository {
     async fn find_by_id_in_provider(
         &self,
         id_in_provider: &IdInProvider,
@@ -162,10 +162,10 @@ mod tests {
     #[ignore]
     async fn postgres_user_repository_resolve_return_to_user() {
         let db_conn = TestDBConnection::default().await;
-        let repo = PostgresUserRepository::new(&db_conn.conn);
+        let repo = PostgresUserRepository::new(db_conn.conn.clone());
         sqlx::query("INSERT INTO users (id, updated_at) VALUES ($1, NOW());")
             .bind("foo")
-            .execute(&db_conn.conn)
+            .execute(&repo.conn)
             .await
             .unwrap();
         let expected_user = User::new(UserId("foo".to_string()), None);
@@ -184,7 +184,7 @@ mod tests {
     #[ignore]
     async fn postgres_user_repository_resolve_return_to_resolve_err() {
         let db_conn = TestDBConnection::default().await;
-        let repo = PostgresUserRepository::new(&db_conn.conn);
+        let repo = PostgresUserRepository::new(db_conn.conn);
         let result = repo.resolve(&UserId::new("foo".to_string())).await.unwrap();
 
         assert!(result.is_none());
@@ -194,7 +194,7 @@ mod tests {
     #[ignore]
     async fn postgres_user_repository_find_by_id_in_filter_return_to_user() {
         let db_conn = TestDBConnection::default().await;
-        let repo = PostgresUserRepository::new(&db_conn.conn);
+        let repo = PostgresUserRepository::new(db_conn.conn.clone());
         let login_providers = vec![LoginProvider::new(
             ProviderKind::Google,
             IdInProvider::new("test1".to_string()),
@@ -213,7 +213,7 @@ mod tests {
     #[ignore]
     async fn postgres_user_repository_find_by_id_in_filter_return_to_none() {
         let db_conn = TestDBConnection::default().await;
-        let repo = PostgresUserRepository::new(&db_conn.conn);
+        let repo = PostgresUserRepository::new(db_conn.conn.clone());
         let login_providers = vec![LoginProvider::new(
             ProviderKind::Google,
             IdInProvider::new("test1".to_string()),

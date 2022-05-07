@@ -16,24 +16,24 @@ use crate::config::DefaultConfig;
 
 use std::collections::HashMap;
 
-#[derive(Debug, Constructor)]
-pub struct DefaultFirebaseAuthAdapter<T: Config>(T, Cache<JwkSet>);
+#[derive(Debug, Constructor, Clone)]
+pub struct DefaultFirebaseAuthAdapter(DefaultConfig, Cache<JwkSet>);
 
-impl HaveConfig for DefaultFirebaseAuthAdapter<DefaultConfig> {
+impl HaveConfig for DefaultFirebaseAuthAdapter {
     type Config = DefaultConfig;
     fn config(&self) -> &Self::Config {
         &self.0
     }
 }
 
-impl HaveCache<JwkSet> for DefaultFirebaseAuthAdapter<DefaultConfig> {
+impl HaveCache<JwkSet> for DefaultFirebaseAuthAdapter {
     fn cache(&self) -> &Cache<JwkSet> {
         &self.1
     }
 }
 
 #[async_trait]
-impl FirebaseAuthDriver for DefaultFirebaseAuthAdapter<DefaultConfig> {
+impl FirebaseAuthDriver for DefaultFirebaseAuthAdapter {
     #[tracing::instrument(skip(token, self))]
     async fn verify(&self, token: AccessToken) -> Result<VerifyResult, VerifyError> {
         let is_exist = self

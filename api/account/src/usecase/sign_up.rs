@@ -59,6 +59,7 @@ pub trait SignUpUseCase: HaveUserRepository + HaveFirebaseAuthDriver + HaveIdGen
         Ok(SignUpUseCaseResult::new())
     }
 }
+impl<T: HaveUserRepository + HaveFirebaseAuthDriver + HaveIdGenerator> SignUpUseCase for T {}
 
 #[cfg(test)]
 mockall::mock! {
@@ -89,7 +90,6 @@ mod tests {
     #[tokio::test]
     async fn sign_up_return_ok_when_verify_ok_and_user_repository_return_empty() {
         struct UC();
-        impl SignUpUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
@@ -129,7 +129,6 @@ mod tests {
     #[tokio::test]
     async fn sign_up_return_err_when_token_expire() {
         struct UC();
-        impl SignUpUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
@@ -169,7 +168,6 @@ mod tests {
     #[tokio::test]
     async fn sign_up_return_err_when_user_disabled() {
         struct UC();
-        impl SignUpUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
@@ -209,7 +207,6 @@ mod tests {
     #[tokio::test]
     async fn sign_up_return_err_when_user_not_found() {
         struct UC();
-        impl SignUpUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
@@ -250,8 +247,6 @@ mod tests {
     async fn sign_up_return_err_when_invalidalidated_key() {
         struct UC();
 
-        impl SignUpUseCase for UC {}
-
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
@@ -291,7 +286,6 @@ mod tests {
     #[tokio::test]
     async fn sign_up_return_err_when_already_exist() {
         struct UC();
-        impl SignUpUseCase for UC {}
         impl HaveUserRepository for UC {
             type UserRepository = MockUserRepository;
             fn user_repository(&self) -> Self::UserRepository {
