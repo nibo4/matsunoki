@@ -42,12 +42,14 @@ impl FirebaseAuthDriver for DefaultFirebaseAuthAdapter {
             .map_err(|_| VerifyError::GetCacheStoreLockError)?
             .contains_key("jwks");
         if !is_exist {
+            info!("Fetch jwks from Google");
             let jwks = get("https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com")
                 .await
                 .with_context(|| VerifyError::GetSecurityTokenError)?
                 .json::<JwkSet>()
                 .await
                 .with_context(|| VerifyError::SecurityTokenDeserializeError)?;
+            info!("Fetched jwks from Google");
             self.cache()
                 .lock()
                 .map_err(|_| VerifyError::GetCacheStoreLockError)?
