@@ -7,6 +7,7 @@ use async_trait::async_trait;
 use derive_more::Constructor;
 use indoc::indoc;
 use sqlx::{query, query_as, PgPool};
+use tracing::info;
 
 use crate::db_conn::HaveDBConnection;
 
@@ -115,7 +116,9 @@ impl UserRepository for PostgresUserRepository {
         Ok(Some(User::new(UserId::new(user.id), Some(providers))))
     }
 
+    #[tracing::instrument(skip(self))]
     async fn store(&self, u: &User) -> Result<(), StoreError> {
+        info!("Start transaction");
         let mut transaction = self
             .db_connection()
             .begin()
@@ -145,6 +148,7 @@ impl UserRepository for PostgresUserRepository {
             .commit()
             .await
             .context("failed commit postgres_user_repository store")?;
+        info!("Commit transaction");
         Ok(())
     }
 }

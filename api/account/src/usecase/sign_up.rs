@@ -17,6 +17,7 @@ use async_trait::async_trait;
 use derive_more::Constructor;
 use serde::Serialize;
 use thiserror::Error;
+use tracing::info;
 
 #[derive(Debug, Constructor, Serialize)]
 pub struct SignUpUseCaseResult {
@@ -40,16 +41,17 @@ pub enum SignUpUseCaseError {
 
 #[async_trait]
 pub trait SignUpUseCase: HaveUserRepository + HaveFirebaseAuthDriver + HaveIdGenerator {
+    #[tracing::instrument(skip(self, token))]
     async fn execute(&self, token: String) -> Result<SignUpUseCaseResult, SignUpUseCaseError> {
         let verify_result = self.firebase_auth().verify(AccessToken::new(token)).await?;
         let id_in_provider = IdInProvider::new(verify_result.uid.0);
 
-        if self
+        let user_opt = self
             .user_repository()
             .find_by_id_in_provider(&id_in_provider)
-            .await?
-            .is_some()
-        {
+            .await?;
+        if user_opt.is_some() {
+            info!("user(id:{:?}) is alread exist", user_opt.unwrap().id);
             return Err(SignUpUseCaseError::AlreadyExist(id_in_provider.0.clone()));
         }
 
