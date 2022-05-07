@@ -7,23 +7,13 @@ pub trait HaveDBConnection {
     fn db_connection(&self) -> &PgPool;
 }
 
-pub struct DBConnFactory;
-
-#[async_trait::async_trait]
-pub trait DBConnFactoryInterface {
-    async fn build(config: &DefaultConfig) -> PgPool;
-}
-
-#[async_trait::async_trait]
-impl DBConnFactoryInterface for DBConnFactory {
-    async fn build(config: &DefaultConfig) -> PgPool {
-        let pool = PgPoolOptions::new()
-            .max_connections(*config.max_connections())
-            .connect("postgres://development:development@localhost:5433/matsunoki-account")
-            .await
-            .unwrap();
-        pool
-    }
+pub async fn build_conn(config: &DefaultConfig) -> PgPool {
+    let pool = PgPoolOptions::new()
+        .max_connections(*config.max_connections())
+        .connect("postgres://development:development@localhost:5433/matsunoki-account")
+        .await
+        .unwrap();
+    pool
 }
 
 #[cfg(test)]

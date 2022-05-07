@@ -3,7 +3,7 @@ use account::effect::id_generator::HaveIdGenerator;
 use account::repository::user_repository::HaveUserRepository;
 use account_driver::adapter::firebase_auth_adapter::DefaultFirebaseAuthAdapter;
 use account_driver::config::DefaultConfig;
-use account_driver::db_conn::{DBConnFactory, DBConnFactoryInterface};
+use account_driver::db_conn::build_conn;
 use account_driver::id_generator::UUIDGenerator;
 use account_driver::repository::postgres_user_repository::PostgresUserRepository;
 
@@ -58,7 +58,7 @@ impl HaveIdGenerator for Kernel {
 
 pub async fn init() -> Kernel {
     let config = HttpControllerConfig::default();
-    let pool = DBConnFactory::build(&config.0).await;
+    let pool = build_conn(&config.0).await;
     let jwks_cache = Arc::new(Mutex::new(HashMap::new()));
 
     Kernel {
