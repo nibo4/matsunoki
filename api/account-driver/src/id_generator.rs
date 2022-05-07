@@ -2,7 +2,7 @@ use account::effect::id_generator::IdGenerator;
 use derive_more::Constructor;
 use uuid::Uuid;
 
-#[derive(Debug, Constructor)]
+#[derive(Debug, Constructor, Clone)]
 pub struct UUIDGenerator;
 
 impl IdGenerator for UUIDGenerator {

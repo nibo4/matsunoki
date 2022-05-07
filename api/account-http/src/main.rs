@@ -1,4 +1,4 @@
-use account_http::kernel::Kernel;
+use account_http::kernel::{init, Kernel};
 use account_http::router;
 use std::net::SocketAddr;
 use tracing::info;
@@ -14,7 +14,9 @@ async fn main() {
         ))
         .with(tracing_subscriber::fmt::layer())
         .init();
-    let app = router();
+    let kernel = init().await;
+    info!("init kernel");
+    let app = router(kernel);
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     info!("listening on {}", addr);
     axum::Server::bind(&addr)
