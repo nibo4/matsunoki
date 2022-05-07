@@ -1,9 +1,9 @@
-use anyhow::Context;
-use async_trait::async_trait;
 use account::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
 use account::model::user::{User, UserId};
 use account::repository::meta::{Repository, ResolveError};
 use account::repository::user_repository::{FilterByIdInProviderError, StoreError, UserRepository};
+use anyhow::Context;
+use async_trait::async_trait;
 use derive_more::Constructor;
 use indoc::indoc;
 use sqlx::{query, query_as, PgPool};
