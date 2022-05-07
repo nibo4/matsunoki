@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-psqldef -f $(dirname $0)/../database/auth/migrate.sql -U $AUTH_DB_USER -W $AUTH_DB_PASSWORD -h $AUTH_DB_HOST -p $AUTH_DB_PORT $AUTH_DB_NAME
-psqldef -f $(dirname $0)/../database/auth/migrate.sql -U $AUTH_DB_USER -W $AUTH_DB_PASSWORD -h $AUTH_DB_HOST -p 5433 $AUTH_DB_NAME
+psqldef -f $(dirname $0)/../database/account/migrate.sql -U $ACCOUNT_DB_USER -W $ACCOUNT_DB_PASSWORD -h $ACCOUNT_DB_HOST -p $ACCOUNT_DB_PORT $ACCOUNT_DB_NAME
+psqldef -f $(dirname $0)/../database/account/migrate.sql -U $ACCOUNT_DB_USER -W $ACCOUNT_DB_PASSWORD -h $ACCOUNT_DB_HOST -p 5433 $ACCOUNT_DB_NAME
