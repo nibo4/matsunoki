@@ -3,6 +3,8 @@ use crate::adapter::firebase_auth::MockFirebaseAuthDriver;
 use crate::adapter::firebase_auth::{
     AccessToken, FirebaseAuthDriver, HaveFirebaseAuthDriver, VerifyError,
 };
+#[cfg(test)]
+use crate::effect::id_generator::MockIdGenerator;
 use crate::effect::id_generator::{HaveIdGenerator, IdGenerator};
 use crate::model::login_provider::{IdInProvider, LoginProvider, ProviderKind};
 use crate::model::user::{User, UserId};
@@ -67,12 +69,17 @@ mockall::mock! {
 
     impl HaveUserRepository for SignUpUseCase {
         type UserRepository = MockUserRepository;
-        fn user_repository(&self) -> MockUserRepository;
+        fn user_repository(&self) -> &MockUserRepository;
     }
 
     impl HaveFirebaseAuthDriver for SignUpUseCase {
         type FirebaseAuthDriver = MockFirebaseAuthDriver;
-        fn firebase_auth(&self) -> MockFirebaseAuthDriver;
+        fn firebase_auth(&self) -> &MockFirebaseAuthDriver;
+    }
+
+    impl HaveIdGenerator for SignUpUseCase {
+        type IdGenerator = MockIdGenerator;
+        fn id_generator(&self) -> &MockIdGenerator;
     }
 }
 
@@ -87,77 +94,75 @@ mod tests {
     use crate::model::user::{User, UserId};
     use crate::repository::user_repository::{HaveUserRepository, MockUserRepository};
 
+    use derive_more::Constructor;
+
+    #[derive(Constructor)]
+    struct UC {
+        user_repo: MockUserRepository,
+        firebase_auth: MockFirebaseAuthDriver,
+        id_gen: MockIdGenerator,
+    }
+    impl HaveUserRepository for UC {
+        type UserRepository = MockUserRepository;
+        fn user_repository(&self) -> &Self::UserRepository {
+            &self.user_repo
+        }
+    }
+
+    impl HaveFirebaseAuthDriver for UC {
+        type FirebaseAuthDriver = MockFirebaseAuthDriver;
+        fn firebase_auth(&self) -> &Self::FirebaseAuthDriver {
+            &self.firebase_auth
+        }
+    }
+
+    impl HaveIdGenerator for UC {
+        type IdGenerator = MockIdGenerator;
+        fn id_generator(&self) -> &MockIdGenerator {
+            &self.id_gen
+        }
+    }
+
     #[tokio::test]
     async fn sign_up_return_ok_when_verify_ok_and_user_repository_return_empty() {
-        struct UC();
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
-                mock.expect_store().returning(|_| Ok(()));
-                mock
-            }
-        }
+        let user_repo = MockUserRepository::new();
+        let firebase_auth = MockFirebaseAuthDriver::new();
+        let id_gen = MockIdGenerator::new();
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify().returning(|_| {
-                    Ok(VerifyResult::new(
-                        LocalId::new("DUMMY".to_string()),
-                        FullName::new("FULL NAME".to_string()),
-                    ))
-                });
-                mock
-            }
-        }
-
-        impl HaveIdGenerator for UC {
-            type IdGenerator = MockIdGenerator;
-            fn id_generator(&self) -> MockIdGenerator {
-                let mut mock = MockIdGenerator::new();
-                mock.expect_generate().returning(|| "xxxxx".to_string());
-                mock
-            }
-        }
-
-        assert!(UC().execute("xxxx".to_string()).await.is_ok())
+        user_repo
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(None));
+        user_repo.expect_store().returning(|_| Ok(()));
+        firebase_auth.expect_verify().returning(|_| {
+            Ok(VerifyResult::new(
+                LocalId::new("DUMMY".to_string()),
+                FullName::new("FULL NAME".to_string()),
+            ))
+        });
+        id_gen.expect_generate().returning(|| "xxxx".to_string());
+        assert!(UC::new(user_repo, firebase_auth, id_gen)
+            .execute("xxxx".to_string())
+            .await
+            .is_ok())
     }
 
     #[tokio::test]
     async fn sign_up_return_err_when_token_expire() {
-        struct UC();
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
-                mock.expect_store().returning(|_| Ok(()));
-                mock
-            }
-        }
+        let user_repo = MockUserRepository::new();
+        let firebase_auth = MockFirebaseAuthDriver::new();
+        let id_gen = MockIdGenerator::new();
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify()
-                    .returning(|_| Err(VerifyError::TokenExpired));
-                mock
-            }
-        }
-
-        impl HaveIdGenerator for UC {
-            type IdGenerator = MockIdGenerator;
-            fn id_generator(&self) -> MockIdGenerator {
-                let mut mock = MockIdGenerator::new();
-                mock.expect_generate().returning(|| "xxxxx".to_string());
-                mock
-            }
-        }
-        let usecase_result = UC().execute("xxxx".to_string()).await;
+        user_repo
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(None));
+        user_repo.expect_store().returning(|_| Ok(()));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Err(VerifyError::TokenExpired));
+        id_gen.expect_generate().returning(|| "xxxx".to_string());
+        let usecase_result = UC::new(user_repo, firebase_auth, id_gen)
+            .execute("xxxx".to_string())
+            .await;
         assert!(usecase_result.is_err());
         assert_eq!(
             usecase_result.err().unwrap().to_string(),
@@ -167,36 +172,22 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_user_disabled() {
-        struct UC();
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
-                mock.expect_store().returning(|_| Ok(()));
-                mock
-            }
-        }
+        let user_repo = MockUserRepository::new();
+        let firebase_auth = MockFirebaseAuthDriver::new();
+        let id_gen = MockIdGenerator::new();
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify()
-                    .returning(|_| Err(VerifyError::UserDisabled(LocalId::new("foo".to_string()))));
-                mock
-            }
-        }
+        user_repo
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(None));
+        user_repo.expect_store().returning(|_| Ok(()));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Err(VerifyError::UserDisabled(LocalId::new("foo".to_string()))));
+        id_gen.expect_generate().returning(|| "xxxx".to_string());
 
-        impl HaveIdGenerator for UC {
-            type IdGenerator = MockIdGenerator;
-            fn id_generator(&self) -> MockIdGenerator {
-                let mut mock = MockIdGenerator::new();
-                mock.expect_generate().returning(|| "xxxxx".to_string());
-                mock
-            }
-        }
-        let usecase_result = UC().execute("xxxx".to_string()).await;
+        let usecase_result = UC::new(user_repo, firebase_auth, id_gen)
+            .execute("xxxx".to_string())
+            .await;
         assert!(usecase_result.is_err());
         assert_eq!(
             usecase_result.err().unwrap().to_string(),
@@ -206,36 +197,22 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_user_not_found() {
-        struct UC();
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
-                mock.expect_store().returning(|_| Ok(()));
-                mock
-            }
-        }
+        let user_repo = MockUserRepository::new();
+        let firebase_auth = MockFirebaseAuthDriver::new();
+        let id_gen = MockIdGenerator::new();
 
-        impl HaveIdGenerator for UC {
-            type IdGenerator = MockIdGenerator;
-            fn id_generator(&self) -> MockIdGenerator {
-                let mut mock = MockIdGenerator::new();
-                mock.expect_generate().returning(|| "xxxxx".to_string());
-                mock
-            }
-        }
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify()
-                    .returning(|_| Err(VerifyError::UserNotFound(LocalId::new("foo".to_string()))));
-                mock
-            }
-        }
+        user_repo
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(None));
+        user_repo.expect_store().returning(|_| Ok(()));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Err(VerifyError::UserNotFound(LocalId::new("foo".to_string()))));
+        id_gen.expect_generate().returning(|| "xxxx".to_string());
 
-        let usecase_result = UC().execute("xxxx".to_string()).await;
+        let usecase_result = UC::new(user_repo, firebase_auth, id_gen)
+            .execute("xxxx".to_string())
+            .await;
         assert!(usecase_result.is_err());
         assert_eq!(
             usecase_result.err().unwrap().to_string(),
@@ -245,37 +222,22 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_invalidalidated_key() {
-        struct UC();
+        let user_repo = MockUserRepository::new();
+        let firebase_auth = MockFirebaseAuthDriver::new();
+        let id_gen = MockIdGenerator::new();
 
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider().returning(|_| Ok(None));
-                mock.expect_store().returning(|_| Ok(()));
-                mock
-            }
-        }
+        user_repo
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(None));
+        user_repo.expect_store().returning(|_| Ok(()));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Err(VerifyError::InvalidatedApiKey));
+        id_gen.expect_generate().returning(|| "xxxx".to_string());
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify()
-                    .returning(|_| Err(VerifyError::InvalidatedApiKey));
-                mock
-            }
-        }
-
-        impl HaveIdGenerator for UC {
-            type IdGenerator = MockIdGenerator;
-            fn id_generator(&self) -> MockIdGenerator {
-                let mut mock = MockIdGenerator::new();
-                mock.expect_generate().returning(|| "xxxxx".to_string());
-                mock
-            }
-        }
-        let usecase_result = UC().execute("xxxx".to_string()).await;
+        let usecase_result = UC::new(user_repo, firebase_auth, id_gen)
+            .execute("xxxx".to_string())
+            .await;
         assert!(usecase_result.is_err());
         assert_eq!(
             usecase_result.err().unwrap().to_string(),
@@ -285,46 +247,26 @@ mod tests {
 
     #[tokio::test]
     async fn sign_up_return_err_when_already_exist() {
-        struct UC();
-        impl HaveUserRepository for UC {
-            type UserRepository = MockUserRepository;
-            fn user_repository(&self) -> Self::UserRepository {
-                let mut mock = MockUserRepository::new();
-                mock.expect_find_by_id_in_provider()
-                    .returning(|_| Ok(Some(User::new(UserId::new("foo".to_string()), None))));
-                mock.expect_store().returning(|_| Ok(()));
-                mock
-            }
-        }
+        let user_repo = MockUserRepository::new();
+        let firebase_auth = MockFirebaseAuthDriver::new();
+        let id_gen = MockIdGenerator::new();
 
-        impl HaveFirebaseAuthDriver for UC {
-            type FirebaseAuthDriver = MockFirebaseAuthDriver;
-            fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-                let mut mock = MockFirebaseAuthDriver::new();
-                mock.expect_verify().returning(|_| {
-                    Ok(VerifyResult::new(
-                        LocalId::new("foo".to_string()),
-                        FullName::new("foo".to_string()),
-                    ))
-                });
-                mock
-            }
-        }
+        user_repo
+            .expect_find_by_id_in_provider()
+            .returning(|_| Ok(Some(User::default())));
+        user_repo.expect_store().returning(|_| Ok(()));
+        firebase_auth
+            .expect_verify()
+            .returning(|_| Err(VerifyError::InvalidatedApiKey));
+        id_gen.expect_generate().returning(|| "xxxx".to_string());
 
-        impl HaveIdGenerator for UC {
-            type IdGenerator = MockIdGenerator;
-
-            fn id_generator(&self) -> Self::IdGenerator {
-                let mut mock = MockIdGenerator::new();
-                mock.expect_generate().returning(|| "xxxxx".to_string());
-                mock
-            }
-        }
-        let usecase_result = UC().execute("xxxx".to_string()).await;
+        let usecase_result = UC::new(user_repo, firebase_auth, id_gen)
+            .execute("xxxx".to_string())
+            .await;
         assert!(usecase_result.is_err());
         assert_eq!(
             usecase_result.err().unwrap().to_string(),
-            "User is already exist. (id: foo)".to_string()
+            "User is already exist. (id: )".to_string()
         );
     }
 }

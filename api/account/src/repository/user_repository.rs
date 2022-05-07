@@ -34,7 +34,7 @@ pub trait UserRepository: Repository<UserId, User> {
 
 pub trait HaveUserRepository {
     type UserRepository: UserRepository + Send + Sync + 'static;
-    fn user_repository(&self) -> Self::UserRepository;
+    fn user_repository(&self) -> &Self::UserRepository;
 }
 
 #[cfg(test)]

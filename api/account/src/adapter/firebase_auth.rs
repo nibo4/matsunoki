@@ -74,5 +74,5 @@ mockall::mock! {
 #[cfg_attr(test, mockall::automock(type FirebaseAuthDriver = MockFirebaseAuthDriver;))]
 pub trait HaveFirebaseAuthDriver {
     type FirebaseAuthDriver: FirebaseAuthDriver + Send + Sync + 'static;
-    fn firebase_auth(&self) -> Self::FirebaseAuthDriver;
+    fn firebase_auth(&self) -> &Self::FirebaseAuthDriver;
 }

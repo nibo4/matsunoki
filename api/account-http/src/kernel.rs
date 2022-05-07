@@ -32,14 +32,14 @@ pub struct Kernel {
 
 impl HaveUserRepository for Kernel {
     type UserRepository = PostgresUserRepository;
-    fn user_repository(&self) -> Self::UserRepository {
-        self.user_repo.clone()
+    fn user_repository(&self) -> &Self::UserRepository {
+        &self.user_repo
     }
 }
 
 impl HaveFirebaseAuthDriver for Kernel {
     type FirebaseAuthDriver = DefaultFirebaseAuthAdapter;
-    fn firebase_auth(&self) -> Self::FirebaseAuthDriver {
-        self.firebase_auth_adapter.clone()
+    fn firebase_auth(&self) -> &Self::FirebaseAuthDriver {
+        &self.firebase_auth_adapter
     }
 }

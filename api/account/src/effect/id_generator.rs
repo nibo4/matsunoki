@@ -6,5 +6,5 @@ pub trait IdGenerator {
 #[cfg_attr(test, mockall::automock(type IdGenerator = MockIdGenerator;))]
 pub trait HaveIdGenerator {
     type IdGenerator: IdGenerator;
-    fn id_generator(&self) -> Self::IdGenerator;
+    fn id_generator(&self) -> &Self::IdGenerator;
 }
