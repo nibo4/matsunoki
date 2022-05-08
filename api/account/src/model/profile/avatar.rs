@@ -4,7 +4,7 @@ use url::Url;
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct Avatar {
-    url: String,
+    pub url: String,
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
