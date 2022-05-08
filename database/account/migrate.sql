@@ -12,3 +12,12 @@ create table users (
   PRIMARY KEY (id)
 );
 
+create table profiles (
+  user_id varchar(255) not null,
+  name varchar(20) not null,
+  display_name text not null,
+  avatar_url text not null,
+  updated_at timestamp without time zone not null,
+  primary key (user_id)
+);
+
