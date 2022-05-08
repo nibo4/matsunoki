@@ -1,5 +1,5 @@
 use derive_more::{Constructor, Deref};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Constructor, Deref, Debug, Clone, Serialize)]
+#[derive(Constructor, Deref, Debug, Clone, Serialize, Deserialize)]
 pub struct DisplayName(pub String);

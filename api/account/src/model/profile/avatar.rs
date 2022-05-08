@@ -1,8 +1,8 @@
 use semval::prelude::*;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use url::Url;
 
-#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, PartialEq, Eq, Deserialize)]
 pub struct Avatar {
     pub url: String,
 }
