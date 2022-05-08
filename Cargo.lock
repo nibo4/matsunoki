@@ -11,6 +11,7 @@ dependencies = [
  "chrono",
  "derive_more",
  "mockall",
+ "semval",
  "serde",
  "thiserror",
  "tokio",
@@ -1552,6 +1553,15 @@ checksum = "0160a13a177a45bfb43ce71c01580998474f556ad854dcbca936dd2841a5c556"
 dependencies = [
  "core-foundation-sys",
  "libc",
+]
+
+[[package]]
+name = "semval"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "660261c0bcb69cf615ea5e75d600d6f3f05bede105d95aa6c2cd07cd31789041"
+dependencies = [
+ "smallvec",
 ]
 
 [[package]]
