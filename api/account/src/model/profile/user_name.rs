@@ -1,8 +1,8 @@
-use derive_more::{Constructor, Deref};
+use derive_more::Deref;
 use semval::prelude::*;
 use serde::Serialize;
 
-#[derive(Constructor, Deref, Debug, Clone, Serialize, PartialEq, Eq)]
+#[derive(Deref, Debug, Clone, Serialize, PartialEq, Eq)]
 pub struct UserName(pub String);
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -36,7 +36,7 @@ impl Validate for UserName {
 impl TryFrom<String> for UserName {
     type Error = (UserName, ValidationContext<UserNameInvalidity>);
     fn try_from(value: String) -> Result<Self, Self::Error> {
-        let value = UserName::new(value);
+        let value = UserName(value);
         Ok(value.into_validated()?.into())
     }
 }
