@@ -27,11 +27,11 @@ impl ProfileCreator for User {
 #[cfg(test)]
 mod tests {
     use super::User;
-    use crate::{ability::profile_creator::ProfileCreator, model::user::UserId};
+    use crate::{ability::profile_creator::ProfileCreator, actor::user::UserId};
 
     #[test]
     fn create_profile_is_ok() {
-        let user = User::new(UserId::new("dummy".to_string()), None);
+        let user = User::new(UserId::new("dummy".to_string()));
         let profile_result = user.create_profile(
             "xxx".to_string(),
             "yyyy".to_string(),
@@ -42,7 +42,7 @@ mod tests {
 
     #[test]
     fn create_profile_is_err() {
-        let user = User::new(UserId::new("dummy".to_string()), None);
+        let user = User::new(UserId::new("dummy".to_string()));
         let profile_result = user.create_profile(
             "xxx".to_string(),
             "yyyy".to_string(),

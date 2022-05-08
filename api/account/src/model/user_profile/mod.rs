@@ -1,24 +1,26 @@
+use crate::actor::user::UserId;
 use crate::model::meta::{AggregateRoot, Entity, Identifier};
-use derive_more::{Constructor, Deref};
+use crate::model::profile::entity::Profile;
+use derive_more::{Constructor, Deref, From};
 use serde::{Deserialize, Serialize};
 
-use crate::model::profile::entity::Profile;
+#[derive(
+    Debug, Clone, PartialEq, Eq, Deref, Constructor, Default, Serialize, Deserialize, From,
+)]
+pub struct UserProfileId(pub UserId);
 
-#[derive(Debug, Clone, PartialEq, Eq, Deref, Constructor, Default, Serialize, Deserialize)]
-pub struct UserId(pub String);
-
-impl Identifier for UserId {}
+impl Identifier for UserProfileId {}
 
 #[derive(Debug, Clone, Serialize, Deserialize, Constructor)]
 pub struct UserProfile {
-    pub id: UserId,
+    pub id: UserProfileId,
     pub prifile: Profile,
 }
 
-impl Entity<UserId> for UserProfile {
-    fn id(&self) -> &UserId {
+impl Entity<UserProfileId> for UserProfile {
+    fn id(&self) -> &UserProfileId {
         &self.id
     }
 }
 
-impl AggregateRoot<UserId> for UserProfile {}
+impl AggregateRoot<UserProfileId> for UserProfile {}

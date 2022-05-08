@@ -4,8 +4,6 @@ use serde::Serialize;
 
 use super::login_provider::LoginProvider;
 
-pub mod profile_creator_ability;
-
 #[derive(Debug, Clone, PartialEq, Eq, Deref, Constructor, Default, Serialize)]
 pub struct UserId(pub String);
 

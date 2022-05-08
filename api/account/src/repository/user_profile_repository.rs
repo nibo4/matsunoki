@@ -1,4 +1,4 @@
-use crate::model::user_profile::{UserId, UserProfile};
+use crate::model::user_profile::{UserProfile, UserProfileId};
 use crate::repository::meta::Repository;
 #[cfg(test)]
 use crate::repository::meta::ResolveError;
@@ -15,7 +15,7 @@ pub enum StoreError {
 }
 
 #[async_trait]
-pub trait UserProfileRepository: Repository<UserId, UserProfile> {
+pub trait UserProfileRepository: Repository<UserProfileId, UserProfile> {
     async fn store(&self, profile: &UserProfile) -> Result<(), StoreError>;
 }
 
@@ -29,8 +29,8 @@ mock! {
     pub UserProfileRepository {}
 
     #[async_trait]
-    impl Repository<UserId, UserProfile> for UserProfileRepository {
-        async fn resolve(&self, id: &UserId) -> Result<Option<UserProfile>, ResolveError>;
+    impl Repository<UserProfileId, UserProfile> for UserProfileRepository {
+        async fn resolve(&self, id: &UserProfileId) -> Result<Option<UserProfile>, ResolveError>;
     }
 
     #[async_trait]

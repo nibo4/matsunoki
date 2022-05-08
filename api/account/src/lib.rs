@@ -1,4 +1,5 @@
 pub mod ability;
+pub mod actor;
 pub mod adapter;
 pub mod effect;
 pub mod model;
