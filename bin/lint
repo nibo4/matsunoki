@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cargo clippy --all --all-targets --all-features --
