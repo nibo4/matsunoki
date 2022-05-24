@@ -1,10 +1,12 @@
 use account::adapter::firebase_auth::HaveFirebaseAuthDriver;
 use account::effect::id_generator::HaveIdGenerator;
+use account::repository::user_profile_repository::HaveUserProfileRepository;
 use account::repository::user_repository::HaveUserRepository;
 use account_driver::adapter::firebase_auth_adapter::DefaultFirebaseAuthAdapter;
 use account_driver::config::DefaultConfig;
 use account_driver::db_conn::build_conn;
 use account_driver::id_generator::UUIDGenerator;
+use account_driver::repository::postgres_user_profile_repository::PostgresUserProfileRepository;
 use account_driver::repository::postgres_user_repository::PostgresUserRepository;
 
 use derive_more::Deref;
@@ -31,8 +33,16 @@ impl Default for HttpControllerConfig {
 #[derive(Clone)]
 pub struct Kernel {
     user_repo: PostgresUserRepository,
+    user_profile_repo: PostgresUserProfileRepository,
     firebase_auth_adapter: DefaultFirebaseAuthAdapter,
     id_generator: UUIDGenerator,
+}
+
+impl HaveUserProfileRepository for Kernel {
+    type UserProfileRepository = PostgresUserProfileRepository;
+    fn user_profile_repository(&self) -> &Self::UserProfileRepository {
+        &self.user_profile_repo
+    }
 }
 
 impl HaveUserRepository for Kernel {
@@ -62,7 +72,8 @@ pub async fn init() -> Kernel {
     let jwks_cache = Arc::new(Mutex::new(HashMap::new()));
 
     Kernel {
-        user_repo: PostgresUserRepository::new(pool),
+        user_repo: PostgresUserRepository::new(pool.clone()),
+        user_profile_repo: PostgresUserProfileRepository::new(pool.clone()),
         firebase_auth_adapter: DefaultFirebaseAuthAdapter::new(config.0.clone(), jwks_cache),
         id_generator: UUIDGenerator::new(),
     }
