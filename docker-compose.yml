@@ -9,7 +9,7 @@ services:
       POSTGRES_HOST_ACCOUNT_METHOD: trust
       POSTGRES_DB: ${ACCOUNT_DB_NAME}
     volumes:
-      - ./.docker/postgresql/data:/var/lib/postgresql/data
+      - ./.docker/account_development_postgres/data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
   account_test:
@@ -21,7 +21,7 @@ services:
       POSTGRES_HOST_ACCOUNT_METHOD: trust
       POSTGRES_DB: ${ACCOUNT_DB_NAME}
     volumes:
-      - ./.docker/postgresql/data:/var/lib/postgresql/data
+      - ./.docker/account_test_postgres/data:/var/lib/postgresql/data
     ports:
       - '5433:5432'
   pgweb:

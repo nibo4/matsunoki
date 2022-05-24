@@ -32,6 +32,7 @@ dependencies = [
  "jsonwebtoken",
  "mockall",
  "reqwest",
+ "semval",
  "serde",
  "serde_json",
  "sqlx",

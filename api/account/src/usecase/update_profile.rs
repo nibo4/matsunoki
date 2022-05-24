@@ -48,7 +48,7 @@ pub trait UpdateProfileUseCase: HaveUserProfileRepository {
         let profile = actor
             .create_profile(params.user_name, params.display_name, params.avatar_url)
             .map_err(|e| UpdateProfileUseCaseError::ProfileValidationError(e))?;
-        let user_profile = UserProfile::new(UserProfileId::new(actor.0.clone()), profile);
+        let user_profile = UserProfile::new(UserProfileId::from(actor.0.clone()), profile);
         self.user_profile_repository().store(&user_profile).await?;
         Ok(UpdateProfileUseCaseResult::new(user_profile))
     }
@@ -109,7 +109,10 @@ mod tests {
             )
             .await;
         assert!(result.is_ok());
-        assert_eq!(result.unwrap().user_profile.id, UserProfileId::new(user.0))
+        assert_eq!(
+            result.unwrap().user_profile.id,
+            UserProfileId::new(user.0 .0)
+        )
     }
 
     #[tokio::test]

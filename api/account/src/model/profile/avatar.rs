@@ -1,8 +1,9 @@
+use derive_more::Constructor;
 use semval::prelude::*;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-#[derive(Debug, Clone, Serialize, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, Serialize, PartialEq, Eq, Deserialize, Constructor)]
 pub struct Avatar {
     pub url: String,
 }

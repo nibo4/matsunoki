@@ -1,10 +1,11 @@
 use super::avatar::{Avatar, AvatarInvalidity};
 use super::display_name::DisplayName;
 use super::user_name::{UserName, UserNameInvalidity};
+use derive_more::Constructor;
 use semval::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, Constructor, PartialEq, Eq)]
 pub struct Profile {
     pub name: UserName,
     pub display_name: DisplayName,

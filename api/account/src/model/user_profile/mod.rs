@@ -7,14 +7,20 @@ use serde::{Deserialize, Serialize};
 #[derive(
     Debug, Clone, PartialEq, Eq, Deref, Constructor, Default, Serialize, Deserialize, From,
 )]
-pub struct UserProfileId(pub UserId);
+pub struct UserProfileId(pub String);
+
+impl From<UserId> for UserProfileId {
+    fn from(u: UserId) -> Self {
+        UserProfileId::new(u.0)
+    }
+}
 
 impl Identifier for UserProfileId {}
 
-#[derive(Debug, Clone, Serialize, Deserialize, Constructor)]
+#[derive(Debug, Clone, Serialize, Deserialize, Constructor, PartialEq, Eq)]
 pub struct UserProfile {
     pub id: UserProfileId,
-    pub prifile: Profile,
+    pub profile: Profile,
 }
 
 impl Entity<UserProfileId> for UserProfile {
