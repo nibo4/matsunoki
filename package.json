@@ -6,6 +6,6 @@
   "workspaces": [
     "./web/ui",
     "./web/core",
-    "./web/adapter",
+    "./web/adapter"
   ]
 }
