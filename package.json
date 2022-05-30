@@ -4,7 +4,8 @@
   "description": "Wiki engine",
   "private": true,
   "scripts": {
-    "run": "ultra"
+    "serve": "ultra -r serve",
+    "build": "ultra -r build"
   },
   "workspaces": [
     "./web/ui",
