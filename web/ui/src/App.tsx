@@ -1,9 +1,10 @@
 import type { Component } from 'solid-js';
+import { SignUpPage } from './page/sign-up'
 
 const App: Component = () => {
   return (
     <div >
-      <button>hello world</button>
+      <SignUpPage />
     </div>
   );
 };
