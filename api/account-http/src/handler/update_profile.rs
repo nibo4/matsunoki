@@ -25,7 +25,7 @@ pub struct UpdateProfileParams(UpdateProfileUseCaseParams);
 pub async fn update_profile_handler(
     user_actor: UserActor,
     kernel: Extension<Kernel>,
-    params: UpdateProfileUseCaseParams,
+    Json(params): Json<UpdateProfileUseCaseParams>,
 ) -> Result<Response, Error> {
     match kernel.execute(&user_actor, params).await {
         Ok(result) => Ok((StatusCode::OK, Json(UpdateProfileResponse(result))).into_response()),
