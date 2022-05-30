@@ -2,21 +2,10 @@
   "name": "matsunoki",
   "version": "1.0.0",
   "description": "Wiki engine",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nibo4/matsunoki.git"
-  },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nibo4/matsunoki/issues"
-  },
-  "homepage": "https://github.com/nibo4/matsunoki#readme"
+  "private": true,
+  "workspaces": [
+    "./web/ui",
+    "./web/core",
+    "./web/adapter",
+  ]
 }
