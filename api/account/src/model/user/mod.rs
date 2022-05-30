@@ -15,6 +15,12 @@ pub struct User {
     pub providers: Vec<LoginProvider>,
 }
 
+impl Into<crate::actor::user::User> for User {
+    fn into(self) -> crate::actor::user::User {
+        crate::actor::user::User::new(crate::actor::user::UserId::new(self.id.0))
+    }
+}
+
 impl User {
     pub fn new(id: UserId, providers: Option<Vec<LoginProvider>>) -> Self {
         User {

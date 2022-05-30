@@ -26,3 +26,4 @@ account = { path = "../account" }
 account-driver = { path = "../account-driver" }
 strum = {version = "0.24"}
 strum_macros = {version = "0.24"}
+http-body = "0.4.3"

@@ -54,6 +54,7 @@ dependencies = [
  "axum",
  "chrono",
  "derive_more",
+ "http-body",
  "serde",
  "serde_json",
  "strum",

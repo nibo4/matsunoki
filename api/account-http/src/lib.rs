@@ -4,6 +4,7 @@ use kernel::Kernel;
 use tower_http::add_extension::AddExtensionLayer;
 use tower_http::trace::TraceLayer;
 
+pub mod actor;
 pub mod error;
 pub mod handler;
 pub mod kernel;
