@@ -1,8 +1,8 @@
-use derive_more::Deref;
+use derive_more::{Constructor, Deref};
 use semval::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Deref, Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Deref, Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Constructor)]
 pub struct UserName(pub String);
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
