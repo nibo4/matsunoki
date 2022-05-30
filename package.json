@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Wiki engine",
   "private": true,
+  "scripts": {
+    "run": "ultra"
+  },
   "workspaces": [
     "./web/ui",
     "./web/core",
