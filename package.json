@@ -7,5 +7,8 @@
     "./web/ui",
     "./web/core",
     "./web/adapter"
-  ]
+  ],
+  "devDependencies": {
+    "ultra-runner": "3.10.5"
+  }
 }
