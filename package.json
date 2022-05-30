@@ -4,7 +4,7 @@
   "description": "Wiki engine",
   "private": true,
   "scripts": {
-    "serve": "ultra -r serve",
+    "start": "ultra -r start",
     "build": "ultra -r build"
   },
   "workspaces": [
