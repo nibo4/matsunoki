@@ -1,5 +1,5 @@
 import { SignUpPage } from '.'
 
-export const Default = () => {
+export default () => {
   return <SignUpPage />
 }

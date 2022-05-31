@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  gap: 32px;
+}
+
+.side-bar {
+  flex: 2
+}
+
+.contents {
+  flex: 8
+}
