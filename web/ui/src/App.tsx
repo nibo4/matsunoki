@@ -57,10 +57,9 @@ const fetchStories = async (): Promise<Record<string, Component>> => {
 const Content: Component<{ stories: Record<string, Component> }> = (props) => {
   const params = useParams();
 
-  if (params.name) {
-    return <>{props.stories[storyPath(params.name)]}</>;
-  }
-  return <></>;
+  return (
+    <Show when={params.name}>{props.stories[storyPath(params.name)]}</Show>
+  )
 };
 
 const Catalog: Component = () => {
