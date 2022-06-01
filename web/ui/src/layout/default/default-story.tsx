@@ -1,5 +1,8 @@
+import type { Component } from 'solid-js'
 import { DefaultLayout } from '.'
 
-export default () => {
+const Story:Component = () => {
   return <DefaultLayout><p>Contents area</p></DefaultLayout>
 }
+
+export default Story

@@ -1,7 +1,7 @@
 import {Routes, Route, Router, useParams, Link, useLocation} from 'solid-app-router';
 import { Suspense, Component, createResource, For, Switch, Match, JSXElement, Show, createMemo } from 'solid-js';
-import styles from './App.module.css'
 import zip from 'lodash.zip'
+import styles from './App.module.css'
 
 const storyName = (fileName: string): string => {
   const filePath = fileName
@@ -26,15 +26,6 @@ const Layout: Component<{children: JSXElement}> = (props) => {
     </div>
   )
 }
-const App: Component = () => {
-  return (
-    <Router>
-      <Suspense fallback={<p>Loading stories...</p>}>
-        <Catalog />
-      </Suspense>
-    </Router>
-  );
-};
 
 const stories = (): string[]  => {
   return Object.keys(import.meta.glob("./**/**/*-story.tsx"))
@@ -46,7 +37,16 @@ const fetchStories = async (): Promise<Record<string, Component>> => {
   })
 }
 
-const Catalog = () => {
+const Content: Component<{stories: Record<string, Component>}> = (props) => {
+  const params = useParams()
+
+  if(params.name) {
+    return <>{props.stories[storyPath(params.name)]}</>
+  }
+  return <></>
+}
+
+const Catalog: Component = () => {
   const [mods]  = createResource(fetchStories)
   const location = useLocation()
   const pathname = createMemo(() => location.pathname.split('').slice(1).join(''));
@@ -64,7 +64,7 @@ const Catalog = () => {
                   (item) => (
                     <li>
                       <Link href={storyName(item)}>{storyName(item)}</Link>
-                      <Show when={storyName(item) == pathname()}><span>←</span></Show>
+                      <Show when={storyName(item) === pathname()}><span>←</span></Show>
                     </li>
                   )
                 }
@@ -84,13 +84,14 @@ const Catalog = () => {
   )
 }
 
-const Content: Component<{stories: Record<string, Component>}> = (props) => {
-  const params = useParams()
-
-  if(params.name) {
-    return <>{props.stories[storyPath(params.name)]}</>
-  }
-  return <></>
-}
+const App: Component = () => {
+  return (
+    <Router>
+      <Suspense fallback={<p>Loading stories...</p>}>
+        <Catalog />
+      </Suspense>
+    </Router>
+  );
+};
 
 export default App;

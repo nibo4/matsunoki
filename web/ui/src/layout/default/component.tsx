@@ -1,8 +1,8 @@
 import { Component, JSXElement } from 'solid-js'
-import styles from './styles.module.css'
 import Logo from '../../assets/logo.svg'
+import styles from './styles.module.css'
 
-const Navbar = () => {
+const Navbar: Component = () => {
   return (
     <nav class={styles["navbar"]}>
       <Logo height="60px" width="200px"/>

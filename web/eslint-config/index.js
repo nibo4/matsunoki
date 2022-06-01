@@ -1,11 +1,16 @@
 module.exports = {
   plugins: [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "import"
+  ],
+  extends: [
+    "eslint:recommended",
+    "plugin:import/typescript"
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     "sourceType": "module",
-    "project": "./tsconfig.json" 
+    "project": "./tsconfig.json"
   },
   env: {
     browser: true,
@@ -13,7 +18,7 @@ module.exports = {
     es6: true,
   },
   rules: {
-    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: "^_.+$", argsIgnorePattern: "^_.+$" }],
+    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: "^(_.+)|_$", argsIgnorePattern: "^(_.+)|_$" }],
     '@typescript-eslint/naming-convention': [
       'error',
       {
@@ -54,7 +59,10 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-use-before-define': 'error',
-    "@typescript-eslint/explicit-function-return-type": 'error',
+    "@typescript-eslint/explicit-function-return-type": ['error', {
+      "allowExpressions": true,
+      "allowTypedFunctionExpressions": true
+    }],
     'no-unused-vars': 'off',
     'import/order': 'error',
     'eqeqeq': ['error', 'smart'],

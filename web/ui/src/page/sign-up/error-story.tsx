@@ -1,5 +1,7 @@
-import { SignUpPage } from '.'
+import type {Component} from 'solid-js'
 
-export default () => {
+const Story: Component = () => {
   return <p>error</p>
 }
+
+export default Story
