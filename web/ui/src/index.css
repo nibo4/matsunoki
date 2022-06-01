@@ -52,31 +52,31 @@ h1 {
   font-size: 2rem;
   font-weight: 500;
   line-height: 1.75;
-  latter-spacing: -0.035em;
+  letter-spacing: -0.035em;
 }
 
 h2 {
   font-size: 1.65rem;
   font-weight: 500;
   line-height: 1.5;
-  latter-spacing: -0.03em;
+  letter-spacing: -0.03em;
 }
 
 h3 {
   font-size: 1.5rem;
   font-weight: 500;
   line-height: 1.5;
-  latter-spacing: -0.025em;
+  letter-spacing: -0.025em;
 }
 
 h4 {
   font-size: 1.25rem;
   line-height: 1.5;
-  latter-spacing: -0.02em;
+  letter-spacing: -0.02em;
 }
 
 .caption {
   font-size: 0.85rem;
   line-height: 1.75;
-  latter-spacing: -0.075em;
+  letter-spacing: -0.075em;
 }
