@@ -40,31 +40,33 @@
   --spacing-l: 40px;
   --spacing-xl: 48px;
   --spacing-xxl: 64px;
+  --font-weight-normal: 500;
+  --font-weight-bold: 700;
 }
 
 * {
-  font-family: "'Noto Sans JP', system-ui,-apple-system,'Segoe UI','Roboto','Ubuntu','Cantarell','Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji";
+  font-family: "Noto Sans JP";
   line-height: 1.7;
   letter-spacing: "0.05em";
 }
 
 h1 {
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-normal);
   line-height: 1.75;
   letter-spacing: -0.035em;
 }
 
 h2 {
   font-size: 1.65rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-normal);
   line-height: 1.5;
   letter-spacing: -0.03em;
 }
 
 h3 {
   font-size: 1.5rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-normal);
   line-height: 1.5;
   letter-spacing: -0.025em;
 }
