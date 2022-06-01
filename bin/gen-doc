@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ $# -ne 1 ]; then
+  echo "document name is not found"
+  exit 1
+fi
+
+touch docs/$(date -u +%Y%m%d-%H%M)-$1.md
