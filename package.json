@@ -10,7 +10,8 @@
   "workspaces": [
     "./web/ui",
     "./web/core",
-    "./web/adapter"
+    "./web/adapter",
+    "./web/eslint-config"
   ],
   "devDependencies": {
     "ultra-runner": "3.10.5"

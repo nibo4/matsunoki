@@ -1,0 +1,26 @@
+{
+  "name": "@matsunoki/eslint-config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nibo4/matsunoki.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nibo4/matsunoki/issues"
+  },
+  "homepage": "https://github.com/nibo4/matsunoki#readme",
+  "peerDependencies": {
+    "eslint": "8.16.0",
+    "@typescript-eslint/eslint-plugin": "5.27.0",
+    "@typescript-eslint/parser": "5.27.0",
+    "eslint-config-prettier": "8.5.0"
+  }
+}
