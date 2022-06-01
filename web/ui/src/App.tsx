@@ -1,5 +1,6 @@
-import {Routes, Route, Router, useParams, Link} from 'solid-app-router';
-import { Suspense, Component, createResource, For, Switch, Match } from 'solid-js';
+import {Routes, Route, Router, useParams, Link, useLocation} from 'solid-app-router';
+import { Suspense, Component, createResource, For, Switch, Match, JSXElement, Show, createMemo } from 'solid-js';
+import { DefaultLayout } from './layout/default'
 import styles from './App.module.css'
 import zip from 'lodash.zip'
 
@@ -14,11 +15,25 @@ const storyPath = (storyName: string): string => {
   return `./${storyName.split(':').join('/')}.tsx`
 }
 
+const Layout: Component<{children: JSXElement}> = (props) => {
+  return (
+    <div class={styles["layout"]}>
+      <div class={styles["header"]}>
+        <span>松の木プレビュー環境</span>
+      </div>
+      <div class={styles["container"]}>
+        {props.children}
+      </div>
+    </div>
+  )
+}
 const App: Component = () => {
   return (
-    <Suspense fallback={<p>Loading stories...</p>}>
-      <Catalog />
-    </Suspense>
+    <Router>
+      <Suspense fallback={<p>Loading stories...</p>}>
+        <Catalog />
+      </Suspense>
+    </Router>
   );
 };
 
@@ -34,30 +49,36 @@ const fetchStories = async (): Promise<Record<string, Component>> => {
 
 const Catalog = () => {
   const [mods]  = createResource(fetchStories)
+  const location = useLocation()
+  const pathname = createMemo(() => location.pathname.split('').slice(1).join(''));
+
 
   return (
     <Switch fallback={<p>Loading</p>}>
       <Match when={mods()}>
         {mods => (
-          <Router>
-            <div class={styles["container"]}>
-              <div class={styles["side-bar"]}>
-                <ul>
-                  <For each={stories()}>
-                  {
-                    (item) => <li><Link href={storyName(item)}>{storyName(item)}</Link></li>
-                  }
-                  </For>
-                </ul>
-              </div>
-              <div class={styles["contents"]}>
-                <Routes>
-                  <Route path="/" element={<p>Hello world</p>}/>
-                  <Route path="/:name" element={<Content stories={mods} />}/>
-                </Routes>
-              </div>
+          <Layout>
+            <div class={styles["side-bar"]}>
+              <ul>
+                <For each={stories()}>
+                {
+                  (item) => (
+                    <li>
+                      <Link href={storyName(item)}>{storyName(item)}</Link>
+                      <Show when={storyName(item) == pathname()}><span>←</span></Show>
+                    </li>
+                  )
+                }
+                </For>
+              </ul>
             </div>
-          </Router>
+            <div class={styles["contents"]}>
+              <Routes>
+                <Route path="/" element={<p>Hello world</p>}/>
+                <Route path="/:name" element={<Content stories={mods} />}/>
+              </Routes>
+            </div>
+          </Layout>
         )}
       </Match>
     </Switch>
