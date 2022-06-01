@@ -1,7 +1,7 @@
-import type {Component} from 'solid-js'
+import type { Component } from "solid-js";
 
 const Story: Component = () => {
-  return <p>error</p>
-}
+  return <p>error</p>;
+};
 
-export default Story
+export default Story;

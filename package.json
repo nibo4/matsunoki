@@ -5,7 +5,10 @@
   "private": true,
   "scripts": {
     "start": "ultra -r start",
-    "build": "ultra -r build"
+    "build": "ultra -r build",
+    "format": "ultra -r format",
+    "lint": "ultra -r lint",
+    "fix":  "ultra -r lint:fix && ultra -r format:fix"
   },
   "workspaces": [
     "./web/ui",

@@ -1,8 +1,8 @@
-import {Component} from 'solid-js'
-import { SignUpPage } from '.'
+import { Component } from "solid-js";
+import { SignUpPage } from ".";
 
-export const Story: Component =  () => {
-  return <SignUpPage />
-}
+export const Story: Component = () => {
+  return <SignUpPage />;
+};
 
-export default Story
+export default Story;

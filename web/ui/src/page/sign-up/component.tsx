@@ -1,6 +1,5 @@
-import type { Component } from 'solid-js'
+import type { Component } from "solid-js";
 
 export const SignUpPage: Component = () => {
-  return <p>Signup page</p>
-}
-
+  return <p>Signup page</p>;
+};
