@@ -12,6 +12,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@matsunoki/eslint-config": "*",
     "@types/lodash.zip": "4.2.7",
     "@typescript-eslint/eslint-plugin": "5.27.0",
     "@typescript-eslint/parser": "5.27.0",
