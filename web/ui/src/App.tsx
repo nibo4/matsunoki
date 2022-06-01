@@ -38,25 +38,27 @@ const Catalog = () => {
   return (
     <Switch fallback={<p>Loading</p>}>
       <Match when={mods()}>
-        <Router>
-          <div class={styles["container"]}>
-            <div class={styles["side-bar"]}>
-              <ul>
-                <For each={stories()}>
-                {
-                  (item) => <li><Link href={storyName(item)}>{storyName(item)}</Link></li>
-                }
-                </For>
-              </ul>
+        {mods => (
+          <Router>
+            <div class={styles["container"]}>
+              <div class={styles["side-bar"]}>
+                <ul>
+                  <For each={stories()}>
+                  {
+                    (item) => <li><Link href={storyName(item)}>{storyName(item)}</Link></li>
+                  }
+                  </For>
+                </ul>
+              </div>
+              <div class={styles["contents"]}>
+                <Routes>
+                  <Route path="/" element={<p>Hello world</p>}/>
+                  <Route path="/:name" element={<Content stories={mods} />}/>
+                </Routes>
+              </div>
             </div>
-            <div class={styles["contents"]}>
-              <Routes>
-                <Route path="/" element={<p>Hello world</p>}/>
-                <Route path="/:name" element={<Content stories={mods() as any} />}/>
-              </Routes>
-            </div>
-          </div>
-        </Router>
+          </Router>
+        )}
       </Match>
     </Switch>
   )
@@ -64,7 +66,7 @@ const Catalog = () => {
 
 const Content: Component<{stories: Record<string, Component>}> = (props) => {
   const params = useParams()
-  console.dir(params)
+
   if(params.name) {
     return <>{props.stories[storyPath(params.name)]}</>
   }
