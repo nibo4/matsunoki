@@ -1,6 +1,5 @@
 import {Routes, Route, Router, useParams, Link, useLocation} from 'solid-app-router';
 import { Suspense, Component, createResource, For, Switch, Match, JSXElement, Show, createMemo } from 'solid-js';
-import { DefaultLayout } from './layout/default'
 import styles from './App.module.css'
 import zip from 'lodash.zip'
 
