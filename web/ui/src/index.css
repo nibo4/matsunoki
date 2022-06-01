@@ -1,0 +1,82 @@
+[data-theme="light"],
+:root:not([data-theme="dark"]) {
+  --primary: #43a047;
+  --primary-hover: #388e3c;
+  --primary-focus: rgba(67, 160, 71, 0.125);
+  --primary-inverse: #FFF;
+}
+
+/* Green Dark scheme (Auto) */
+/* Automatically enabled if user has Dark mode enabled */
+@media only screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --primary: #43a047;
+    --primary-hover: #4caf50;
+    --primary-focus: rgba(67, 160, 71, 0.25);
+    --primary-inverse: #FFF;
+  }
+}
+
+/* Green Dark scheme (Forced) */
+/* Enabled if forced with data-theme="dark" */
+[data-theme="dark"] {
+  --primary: #43a047;
+  --primary-hover: #4caf50;
+  --primary-focus: rgba(67, 160, 71, 0.25);
+  --primary-inverse: #FFF;
+}
+
+/* Green (Common styles) */
+:root {
+  --form-element-active-border-color: var(--primary);
+  --form-element-focus-color: var(--primary-focus);
+  --switch-color: var(--primary-inverse);
+  --switch-checked-background-color: var(--primary);
+  --spacing-xxxs: 4px;
+  --spacing-xxs: 8px;
+  --spacing-xs: 16px;
+  --spacing-s: 24px;
+  --spacing-m: 32px;
+  --spacing-l: 40px;
+  --spacing-xl: 48px;
+  --spacing-xxl: 64px;
+}
+
+* {
+  font-family: "'Noto Sans JP', system-ui,-apple-system,'Segoe UI','Roboto','Ubuntu','Cantarell','Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji";
+  line-height: 1.7;
+  letter-spacing: "0.05em";
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.75;
+  latter-spacing: -0.035em;
+}
+
+h2 {
+  font-size: 1.65rem;
+  font-weight: 500;
+  line-height: 1.5;
+  latter-spacing: -0.03em;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.5;
+  latter-spacing: -0.025em;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  latter-spacing: -0.02em;
+}
+
+.caption {
+  font-size: 0.85rem;
+  line-height: 1.75;
+  latter-spacing: -0.075em;
+}

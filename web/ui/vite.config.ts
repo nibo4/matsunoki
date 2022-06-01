@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import solidPlugin from 'vite-plugin-solid';
-import GlobPlugin from 'vite-plugin-glob'
+import globPlugin from 'vite-plugin-glob'
+import svgPlugin from 'vite-plugin-solid-svg'
 
 export default defineConfig({
-  plugins: [GlobPlugin(), solidPlugin()],
+  plugins: [globPlugin(), solidPlugin(), svgPlugin()],
   server: {
     port: 3001
   },

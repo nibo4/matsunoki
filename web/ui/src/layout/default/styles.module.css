@@ -1,0 +1,23 @@
+.navbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 80px;
+  background-color: var(--primary-focus);
+  padding-inline: var(--spacing-m)
+}
+
+.navbar > p {
+  color: var(--primary-inverse); 
+}
+
+.contents {
+  margin-block: var(--spacing-l);
+  height: 100%;
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}

@@ -23,7 +23,7 @@ const App: Component = () => {
 };
 
 const stories = (): string[]  => {
-  return Object.keys(import.meta.glob("./page/**/*-story.tsx"))
+  return Object.keys(import.meta.glob("./**/**/*-story.tsx"))
 }
 
 const fetchStories = async (): Promise<Record<string, Component>> => {
