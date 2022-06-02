@@ -25,11 +25,5 @@
     "vite-plugin-solid": "^2.2.6",
     "vite-plugin-solid-svg": "0.2.0"
   },
-  "dependencies": {
-    "@picocss/pico": "1.5.2",
-    "@solid-primitives/i18n": "1.1.0",
-    "lodash.zip": "4.2.0",
-    "solid-app-router": "0.3.3",
-    "solid-js": "^1.4.2"
-  }
+  "dependencies": {}
 }
