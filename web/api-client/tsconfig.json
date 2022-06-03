@@ -8,7 +8,7 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "nolib",
-    "types": [],
+    "types": ["vitest/globals"],
     "noEmit": true,
     "isolatedModules": true
   }
