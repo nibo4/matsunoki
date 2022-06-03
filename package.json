@@ -14,7 +14,6 @@
   "workspaces": [
     "./web/ui",
     "./web/core",
-    "./web/adapter",
     "./web/api-client",
     "./web/eslint-config"
   ],
