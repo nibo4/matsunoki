@@ -1,15 +1,5 @@
-export type Fetch = typeof window.fetch;
+import {Config, UnknownError} from "./shared";
 
-export type Config = {
-  fetch: Fetch;
-  host: string;
-  authorizationToken: string;
-};
-
-export type UnknownError = {
-  kind: "api-client:unknown-error";
-  e: any;
-};
 
 export const buildUnknownError = (e: any): UnknownError => {
   return {

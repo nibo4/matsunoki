@@ -1,10 +1,9 @@
 import { Err, Ok, Result } from "ts-results";
 import { z } from "zod";
+import { Config, UnknownError } from './shared'
 import {
-  Config,
   buildURL,
   buildHeader,
-  UnknownError,
   buildUnknownError,
 } from "./internal";
 
@@ -18,9 +17,7 @@ export type SignUpResponse = {
   name: string;
 };
 
-export type SignUp = (
-  config: Config
-) => Promise<Result<SignUpResponse, SignUpError | UnknownError>>;
+export type SignUp = () => Promise<Result<SignUpResponse, SignUpError | UnknownError>>;
 
 export const responseHandler = (
   a: any
@@ -40,11 +37,15 @@ export const responseHandler = (
   }
 };
 
-export const signUp: SignUp = async (config) => {
-  const response = await config.fetch(buildURL("sign_up", config), {
+type Dependencies = {
+  config: Config
+}
+
+export const signUp = (deps: Dependencies): SignUp => async () => {
+  const response = await deps.config.fetch(buildURL("sign_up", deps.config), {
     method: "POST",
     mode: "cors",
-    headers: buildHeader(config),
+    headers: buildHeader(deps.config),
   });
 
   return responseHandler(response);
