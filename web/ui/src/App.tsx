@@ -70,34 +70,32 @@ const Catalog: Component = () => {
   );
 
   return (
-    <Switch fallback={<p>Loading</p>}>
-      <Match when={mods()}>
-        {(mods) => (
-          <Layout>
-            <div class={styles["side-bar"]}>
-              <ul>
-                <For each={stories()}>
-                  {(item) => (
-                    <li>
-                      <Link href={storyName(item)}>{storyName(item)}</Link>
-                      <Show when={storyName(item) === pathname()}>
-                        <span>←</span>
-                      </Show>
-                    </li>
-                  )}
-                </For>
-              </ul>
-            </div>
-            <div class={styles["contents"]}>
-              <Routes>
-                <Route path="/" element={<p>Hello world</p>} />
-                <Route path="/:name" element={<Content stories={mods} />} />
-              </Routes>
-            </div>
-          </Layout>
-        )}
-      </Match>
-    </Switch>
+    <Show when={mods()}>
+      {(mods) => (
+        <Layout>
+          <div class={styles["side-bar"]}>
+            <ul>
+              <For each={stories()}>
+                {(item) => (
+                  <li>
+                    <Link href={storyName(item)}>{storyName(item)}</Link>
+                    <Show when={storyName(item) === pathname()}>
+                      <span>←</span>
+                    </Show>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </div>
+          <div class={styles["contents"]}>
+            <Routes>
+              <Route path="/" element={<p>Hello world</p>} />
+              <Route path="/:name" element={<Content stories={mods} />} />
+            </Routes>
+          </div>
+        </Layout>
+      )}
+    </Show>
   );
 };
 

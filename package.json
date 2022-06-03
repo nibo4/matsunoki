@@ -8,7 +8,8 @@
     "build": "ultra -r build",
     "format": "ultra -r format",
     "lint": "ultra -r lint",
-    "fix":  "ultra -r lint:fix && ultra -r format:fix"
+    "fix":  "ultra -r lint:fix && ultra -r format:fix",
+    "test":  "ultra -r test"
   },
   "workspaces": [
     "./web/ui",
