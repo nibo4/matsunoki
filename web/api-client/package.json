@@ -2,7 +2,16 @@
   "name": "@matsunoki/api-client",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.esm.js",
+  "main": "dist/index.cjs.js",
+  "files": [
+    "README.md",
+    "dist/index-cjs.js",
+    "dist/index-esm.js",
+    "dist/index.d.ts",
+    "package.json"
+  ],
   "devDependencies": {
     "@matsunoki/eslint-config": "*",
     "@typescript-eslint/eslint-plugin": "5.27.0",

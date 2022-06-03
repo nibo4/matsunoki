@@ -9,22 +9,22 @@ export default [
     })],
     output: [
       {
-        file: `dist/bundle.js`,
+        file: `dist/index.cjs.js`,
         format: 'cjs',
         sourcemap: true,
       },
       {
-        file: `dist/bundle.js`,
+        file: `dist/index.esm.js`,
         format: 'es',
         sourcemap: true,
       }
     ]
   },
   {
-    input: `src/index.js`,
+    input: `src/index.ts`,
     plugins: [dts()],
     output: {
-      file: `dist/bundle.d.ts`,
+      file: `dist/index.d.ts`,
       format: 'es',
     },
   }
