@@ -40,7 +40,7 @@ export const responseHandler = (
   }
 };
 
-export const signUp: SignUp = async (config: Config) => {
+export const signUp: SignUp = async (config) => {
   const response = await config.fetch(buildURL("sign_up", config), {
     method: "POST",
     mode: "cors",
