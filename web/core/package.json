@@ -45,6 +45,6 @@
   "homepage": "https://github.com/nibo4/matsunoki#readme",
   "dependencies": {
     "ts-results": "3.3.0",
-    "zod": "3.17.3"
+    "@matsunoki/api-client": "*"
   }
 }
