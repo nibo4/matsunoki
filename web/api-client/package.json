@@ -24,14 +24,14 @@
     "vitest": "0.13.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup -c ./rollup.config.js",
     "start": "rollup -c ./rollup.config.js -w",
     "lint": "eslint './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "format": "prettier --check './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "format:fix": "prettier --write './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
