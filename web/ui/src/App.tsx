@@ -11,8 +11,6 @@ import {
   Component,
   createResource,
   For,
-  Switch,
-  Match,
   JSXElement,
   Show,
   createMemo,
