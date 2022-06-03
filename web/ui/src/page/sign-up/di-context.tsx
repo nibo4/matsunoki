@@ -1,25 +1,29 @@
-import {Component, createContext, JSXElement, useContext} from "solid-js";
-import { SignUpUserAction, signUpUserActionForPreview } from '@matsunoki/core'
+import { Component, createContext, JSXElement, useContext } from "solid-js";
+import { SignUpUserAction, signUpUserActionForPreview } from "@matsunoki/core";
 
 type Dependencies = {
-  signUp: SignUpUserAction
-}
-const SignUpDIContext = createContext<Dependencies>()
+  signUp: SignUpUserAction;
+};
+const SignUpDIContext = createContext<Dependencies>();
 
 export const useSignUpDIContext = (): Dependencies => {
-  const ctx = useContext(SignUpDIContext)
-  if(ctx == null) {
-    throw new Error("SignUpDIContext is not provided")
+  const ctx = useContext(SignUpDIContext);
+  if (ctx == null) {
+    throw new Error("SignUpDIContext is not provided");
   }
-  return ctx
-}
+  return ctx;
+};
 
-export const SignUpDIContextProviderForPreview: Component<{children: JSXElement}> = (props) => {
+export const SignUpDIContextProviderForPreview: Component<{
+  children: JSXElement;
+}> = (props) => {
   return (
-    <SignUpDIContext.Provider value={{
-      signUp: signUpUserActionForPreview()
-    }}>
+    <SignUpDIContext.Provider
+      value={{
+        signUp: signUpUserActionForPreview(),
+      }}
+    >
       {props.children}
     </SignUpDIContext.Provider>
-  )
-}
+  );
+};

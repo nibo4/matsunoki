@@ -1,5 +1,4 @@
-import {Config, UnknownError} from "./shared";
-
+import { Config, UnknownError } from "./shared";
 
 export const buildUnknownError = (e: any): UnknownError => {
   return {

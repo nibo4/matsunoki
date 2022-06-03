@@ -1,3 +1,1 @@
-export const dummy = (): void => {
-
-}
+export const dummy = (): void => {};
