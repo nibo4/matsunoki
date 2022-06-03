@@ -59,7 +59,7 @@ const Content: Component<{ stories: Record<string, Component> }> = (props) => {
 
   return (
     <Show when={params.name}>{props.stories[storyPath(params.name)]}</Show>
-  )
+  );
 };
 
 const Catalog: Component = () => {

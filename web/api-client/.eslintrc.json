@@ -1,3 +1,6 @@
 {
-  "extends": ["@matsunoki/eslint-config"]
+  "extends": ["@matsunoki/eslint-config"],
+  "rules": {
+    "@typescript-eslint/naming-convention": ["off"]
+  }
 }

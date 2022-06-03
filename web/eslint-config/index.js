@@ -2,12 +2,12 @@ module.exports = {
   plugins: [
     "@typescript-eslint",
     "import",
-    "solid"
+    "solid",
   ],
   extends: [
     "eslint:recommended",
     "plugin:solid/recommended",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -21,6 +21,7 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: "^(_.+)|_$", argsIgnorePattern: "^(_.+)|_$" }],
+    'no-undef': ['off'],
     '@typescript-eslint/naming-convention': [
       'error',
       {

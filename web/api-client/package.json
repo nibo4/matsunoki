@@ -28,8 +28,8 @@
     "start": "rollup -c ./rollup.config.js -w",
     "lint": "eslint './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
-    "format": "prettier --check './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
-    "format:fix": "prettier --write './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
+    "format": "prettier --check './src/**/*.ts' './src/*.ts'",
+    "format:fix": "prettier --write './src/**/*.ts' './src/*.ts'",
     "type-check": "tsc --noEmit",
     "test": "vitest"
   },
