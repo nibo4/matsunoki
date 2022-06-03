@@ -3,3 +3,4 @@ database/*.db
 .docker
 node_modules
 web/**/.ultra.cache.json
+web/**/dist/*

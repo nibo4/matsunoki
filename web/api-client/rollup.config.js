@@ -3,7 +3,7 @@ import esbuild from 'rollup-plugin-esbuild'
 
 export default [
   {
-    input: `src/index.js`,
+    input: `src/index.ts`,
     plugins: [esbuild({
       tsconfig: './tsconfig.json'
     })],
