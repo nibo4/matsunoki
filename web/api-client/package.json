@@ -31,7 +31,7 @@
     "format": "prettier --check './src/**/*.ts' './src/*.ts'",
     "format:fix": "prettier --write './src/**/*.ts' './src/*.ts'",
     "type-check": "tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",
