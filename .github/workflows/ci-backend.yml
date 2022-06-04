@@ -44,6 +44,7 @@ jobs:
   test:
     name: Test
     needs: [compile]
+    runs-on: ubuntu-latest
     steps:
       - name: Setup | Checkout
         uses: actions/checkout@v2
