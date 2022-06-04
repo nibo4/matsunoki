@@ -1,11 +1,11 @@
 import type { Config } from "@matsunoki/api-client";
 
-export type Session =
+export type SignInSession =
   | {
-      kind: "beforeInitialize";
+      kind: "beforeSignIn";
     }
   | {
-      kind: "initialized";
+      kind: "signed";
       apiKey: string;
     };
 
@@ -16,8 +16,8 @@ export class BeforeInitializeErrorError extends Error {
   }
 }
 
-export const buildApiClientConfig = (session: Session): Config => {
-  if (session.kind !== "initialized") throw new BeforeInitializeErrorError();
+export const buildApiClientConfig = (session: SignInSession): Config => {
+  if (session.kind !== "signed") throw new BeforeInitializeErrorError();
 
   return {
     fetch: window.fetch,
