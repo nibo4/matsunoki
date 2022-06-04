@@ -1,5 +1,5 @@
-import type { SignInWithProvider } from '../interface/'
+import type { SignInWithProvider } from "../interface/";
 
-export const firebaseSignInWithProvider: SignInWithProvider = (provider) => {
-  return Promise.resolve("foo")
-}
+export const firebaseSignInWithProvider: SignInWithProvider = (_provider) => {
+  return Promise.resolve("foo");
+};
