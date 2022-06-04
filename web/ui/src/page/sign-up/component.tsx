@@ -17,7 +17,7 @@ const PageContent: Component = () => {
             <label>{t("description")}</label>
           </section>
           <section>
-            <button class={styles["sign-up-with-google"]} onClick={}>
+            <button class={styles["sign-up-with-google"]}>
               <GoogleLogo />
               <span>{t("signUpWithGoogle")}</span>
             </button>

@@ -1,30 +1,30 @@
 import { Err, Ok } from "ts-results";
 import {
-  handleSignUpCallbackSystemAction,
-  handleSignUpCallbackSystemActionSubject,
+  handleSignUpCallback,
+  handleSignUpCallbackSubject,
 } from "./handle-sign-up-callback";
 
-describe("#handleSignUpCallbackSystemAction", () => {
+describe("#handleSignUpCallback", () => {
   describe("when success", () => {
-    it("success result flow in the handleSignUpCallbackSystemActionSubject", () => {
+    it("success result flow in the handleSignUpCallbackSubject", () => {
       const dummyData = {
         userId: "xxx",
         name: "yyyy",
       };
-      handleSignUpCallbackSystemActionSubject.subscribe((result) => {
+      handleSignUpCallbackSubject.subscribe((result) => {
         expect(result.ok).toStrictEqual(true);
         expect(result.val).toStrictEqual(dummyData);
       });
 
-      handleSignUpCallbackSystemAction({
+      handleSignUpCallback({
         signUp: () => Promise.resolve(Ok(dummyData)),
       });
     });
   });
 
   describe("when failed", () => {
-    it("success result flow in the handleSignUpCallbackSystemActionSubject", () => {
-      handleSignUpCallbackSystemActionSubject.subscribe((result) => {
+    it("success result flow in the handleSignUpCallbackSubject", () => {
+      handleSignUpCallbackSubject.subscribe((result) => {
         expect(result.err).toStrictEqual(true);
         expect(result.val).toStrictEqual({
           kind: "api-client:unknown-error",
@@ -32,7 +32,7 @@ describe("#handleSignUpCallbackSystemAction", () => {
         });
       });
 
-      handleSignUpCallbackSystemAction({
+      handleSignUpCallback({
         signUp: () =>
           Promise.resolve(Err({ kind: "api-client:unknown-error", e: 12 })),
       });
