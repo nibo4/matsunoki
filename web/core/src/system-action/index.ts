@@ -1,1 +1,1 @@
-export const dummy = (): void => {};
+export * from "./handle-sign-up-callback";

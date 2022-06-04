@@ -1,1 +1,3 @@
-export * from "./sign-up";
+export const foo: () => void = () => {
+  console.dir("hello");
+};

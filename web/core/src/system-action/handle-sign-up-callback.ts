@@ -24,7 +24,7 @@ export const handleSignUpCallbackSystemAction =
     handleSignUpCallbackSystemActionSubject.next(response);
   };
 
-export const signUpSystemActionForPreview =
+export const handleSignUpCallbackSystemActionForPreview =
   (): HandleSignUpCallbackSystemAction => {
     return handleSignUpCallbackSystemAction({
       signUp: () => {
