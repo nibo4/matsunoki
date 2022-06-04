@@ -3,18 +3,6 @@ on:
   - push
 
 jobs:
-  setup:
-    name: Setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 17
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-      - run: npm ci
   lint:
     name: Lint
     runs-on: ubuntu-latest
