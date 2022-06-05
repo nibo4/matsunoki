@@ -11,9 +11,9 @@ export const firebaseSignInWithProvider: SignInWithProvider = async (
   const auth = getAuth();
 
   const signInResult = await signInWithPopup(auth, provider);
-  const token = GoogleAuthProvider.credentialFromResult(signInResult);
-  if (token == null || token.idToken == null) {
+  const credential = GoogleAuthProvider.credentialFromResult(signInResult);
+  if (credential == null || credential.idToken == null) {
     throw new Error("token is required(actual: null)");
   }
-  return token.idToken;
+  return credential.idToken;
 };
