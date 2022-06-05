@@ -1,4 +1,5 @@
 import type { Config } from "@matsunoki/api-client";
+import {BehaviorSubject} from "rxjs";
 
 export type SignInSession =
   | {
@@ -9,6 +10,8 @@ export type SignInSession =
       apiKey: string;
     };
 
+export type SessionStore = BehaviorSubject<SignInSession>
+
 export class BeforeInitializeErrorError extends Error {
   constructor(...params: any[]) {
     super(...params);
@@ -16,8 +19,14 @@ export class BeforeInitializeErrorError extends Error {
   }
 }
 
-export const buildApiClientConfig = (session: SignInSession): Config => {
-  if (session.kind !== "signed") throw new BeforeInitializeErrorError();
+type Dependencies = {
+  session: SessionStore
+}
+
+export const buildApiClientConfig = (sessionStore: SessionStore): Config => {
+  const session = sessionStore.getValue()
+
+  if(session.kind === 'beforeSignIn') throw new BeforeInitializeErrorError()
 
   return {
     fetch: window.fetch,
