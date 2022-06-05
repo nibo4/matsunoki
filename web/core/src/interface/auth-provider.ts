@@ -1,4 +1,4 @@
 export type Provider = "google";
-export type Token = string;
+export type AccessToken = string;
 
-export type SignInWithProvider = (p: Provider) => Promise<Token>;
+export type SignInWithProvider = (p: Provider) => Promise<AccessToken>;
