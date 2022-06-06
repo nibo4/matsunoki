@@ -4,8 +4,9 @@ import { Config, UnknownError } from "./shared";
 import { buildURL, buildHeader, buildUnknownError } from "./internal";
 
 export type VerifyError = {
-  kind: string;
-  key: string;
+  kind: 'VerifyError',
+} | {
+  kind: 'UserNotFound'
 };
 
 export type VerifyResponse = {
@@ -32,6 +33,25 @@ export const responseHandler = (
   }
 };
 
+export const responseErrorHandler = (
+  a: any
+): Result<never, VerifyError | UnknownError> => {
+  try {
+    const schema = z.object({
+      kind: z.string(),
+      key: z.string()
+    });
+    const parsed = schema.parse(a);
+    switch(parsed.kind) {
+      case 'verify_failed': return Err({kind: "VerifyError"})
+      case 'user_not_found': return Err({kind: 'UserNotFound'})
+      default: return Err(buildUnknownError(parsed))
+    }
+  } catch (e) {
+    return Err(buildUnknownError(e));
+  }
+};
+
 type Dependencies = {
   config: Config;
 };
@@ -44,6 +64,10 @@ export const verify =
       mode: "cors",
       headers: buildHeader(deps.config),
     });
+
+    if(response.ok) {
+      return responseHandler(response);
+    }
 
     return responseHandler(response);
   };
