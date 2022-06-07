@@ -1,7 +1,9 @@
+import { SignUp, Verify } from "@matsunoki/api-client";
 import { Observer } from "rxjs";
 import { Err, Ok, Result } from "ts-results";
 import { buildCoreUnknownError, CoreUnkownError } from "../error";
 import { SignInWithProvider } from "../interface";
+import { SessionStore } from "../session";
 
 export type SignedInUser =
   | { kind: "NewUser"; userId: string; name: string }
@@ -11,17 +13,20 @@ export type SignInResult = Result<SignedInUser, CoreUnkownError>;
 export type SignedInObserver = Observer<SignInResult>;
 
 type SignInDependencies = {
+  signUp: SignUp;
+  verify: Verify;
   signInProvider: SignInWithProvider;
   signedInObserver: SignedInObserver;
+  sessionStore: SessionStore;
 };
-
 
 type SignIn = () => Promise<void>;
 
 export const signIn: (deps: SignInDependencies) => SignIn =
   (deps: SignInDependencies) => async (): Promise<void> => {
     try {
-      const id = await deps.signInProvider("google")
+      const token = await deps.signInProvider("google");
+      deps.sessionStore.next({ kind: "signed", apiKey: token });
       const verifyResult = await deps.verify();
 
       if (verifyResult.err && verifyResult.val.kind === "UserNotFound") {
@@ -47,7 +52,7 @@ export const signIn: (deps: SignInDependencies) => SignIn =
       deps.signedInObserver.next(
         Ok({ kind: "ExistingUser", userId: verifyResult.val.userId })
       );
-    } catch(e) {
+    } catch (e) {
       deps.signedInObserver.next(Err(buildCoreUnknownError(e)));
     }
   };

@@ -19,14 +19,16 @@ export class BeforeInitializeErrorError extends Error {
   }
 }
 
-export const buildApiClientConfig = (sessionStore: SessionStore): Config => {
-  const session = sessionStore.getValue();
+export const buildGetConfig = (sessionStore: SessionStore): (() => Config) => {
+  return () => {
+    const session = sessionStore.getValue();
 
-  if (session.kind === "beforeSignIn") throw new BeforeInitializeErrorError();
+    if (session.kind === "beforeSignIn") throw new BeforeInitializeErrorError();
 
-  return {
-    fetch: window.fetch,
-    authorizationToken: session.apiKey,
-    host: import.meta.env.ACCOUNT_API_HOST,
+    return {
+      fetch: window.fetch,
+      authorizationToken: session.apiKey,
+      host: import.meta.env.ACCOUNT_API_HOST,
+    };
   };
 };

@@ -58,16 +58,17 @@ export const responseErrorHandler = (
 };
 
 type Dependencies = {
-  config: Config;
+  getConfig: () => Config;
 };
 
 export const verify =
   (deps: Dependencies): Verify =>
   async () => {
-    const response = await deps.config.fetch(buildURL("verify", deps.config), {
+    const config = deps.getConfig();
+    const response = await config.fetch(buildURL("verify", config), {
       method: "POST",
       mode: "cors",
-      headers: buildHeader(deps.config),
+      headers: buildHeader(config),
     });
 
     if (response.ok) {

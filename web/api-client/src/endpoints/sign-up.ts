@@ -53,16 +53,17 @@ export const responseErrorHandler = (
 };
 
 type Dependencies = {
-  config: Config;
+  getConfig: () => Config;
 };
 
 export const signUp =
   (deps: Dependencies): SignUp =>
   async () => {
-    const response = await deps.config.fetch(buildURL("sign_up", deps.config), {
+    const config = deps.getConfig();
+    const response = await config.fetch(buildURL("sign_up", config), {
       method: "POST",
       mode: "cors",
-      headers: buildHeader(deps.config),
+      headers: buildHeader(config),
     });
 
     if (response.ok) {

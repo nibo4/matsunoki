@@ -1,3 +1,3 @@
 export const dummy = (): void => {
-  console.log("dummy")
-}
+  console.log("dummy");
+};

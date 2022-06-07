@@ -1,6 +1,7 @@
-import {SignUp} from "@matsunoki/api-client";
+import { SignUp } from "@matsunoki/api-client";
 import { BehaviorSubject } from "rxjs";
-import {Err, Ok} from "ts-results";
+import { Err, Ok } from "ts-results";
+import { SignInSession } from "../session";
 import { signIn, SignInResult } from "./sign-in";
 
 describe("#signIn", () => {
@@ -11,8 +12,12 @@ describe("#signIn", () => {
         name: "yyyy",
       };
       const subject = new BehaviorSubject<SignInResult | null>(null);
+      const sessionSubject = new BehaviorSubject<SignInSession>({
+        kind: "beforeSignIn" as const,
+      });
 
       await signIn({
+        sessionStore: sessionSubject,
         signInProvider: () => Promise.resolve("fooo"),
         signUp: () => Promise.resolve(Ok(dummyData)),
         verify: () => Promise.resolve(Ok({ userId: "foo" })),
@@ -21,8 +26,8 @@ describe("#signIn", () => {
 
       expect(subject.getValue()?.ok).toStrictEqual(true);
       expect(subject.getValue()?.val).toStrictEqual({
-        kind: 'ExistingUser',
-        userId: 'foo'
+        kind: "ExistingUser",
+        userId: "foo",
       });
     });
 
@@ -32,12 +37,16 @@ describe("#signIn", () => {
         name: "yyyy",
       };
       const subject = new BehaviorSubject<SignInResult | null>(null);
+      const sessionSubject = new BehaviorSubject<SignInSession>({
+        kind: "beforeSignIn" as const,
+      });
 
       await signIn({
+        sessionStore: sessionSubject,
         signInProvider: () => Promise.resolve("fooo"),
         signUp: () => Promise.resolve(Ok(dummyData)),
         verify: () => Promise.resolve(Err({ kind: "UserNotFound" })),
-        signedInObserver: subject
+        signedInObserver: subject,
       })();
 
       expect(subject.getValue()?.ok).toStrictEqual(true);
@@ -57,8 +66,12 @@ describe("#signIn", () => {
       };
 
       const subject = new BehaviorSubject<SignInResult | null>(null);
+      const sessionSubject = new BehaviorSubject<SignInSession>({
+        kind: "beforeSignIn" as const,
+      });
 
       await signIn({
+        sessionStore: sessionSubject,
         signInProvider: () => Promise.reject("fooo"),
         signUp: () => Promise.resolve(Ok(dummyData)),
         verify: () => Promise.resolve(Ok({ userId: "foo" })),
@@ -69,14 +82,13 @@ describe("#signIn", () => {
     });
 
     it("should shed error result in the signedInObserver when verify === user-not-found and failed signUp", async () => {
-      const dummyData = {
-        userId: "foo",
-        name: "yyyy",
-      };
-
       const subject = new BehaviorSubject<SignInResult | null>(null);
+      const sessionSubject = new BehaviorSubject<SignInSession>({
+        kind: "beforeSignIn" as const,
+      });
 
       await signIn({
+        sessionStore: sessionSubject,
         signInProvider: () => Promise.resolve("fooo"),
         verify: () => Promise.resolve(Err({ kind: "UserNotFound" })),
         signUp: (): ReturnType<SignUp> =>
@@ -88,14 +100,13 @@ describe("#signIn", () => {
     });
 
     it("should shed error result in the signedInObserver when failed verify and signUp", async () => {
-      const dummyData = {
-        userId: "foo",
-        name: "yyyy",
-      };
-
       const subject = new BehaviorSubject<SignInResult | null>(null);
+      const sessionSubject = new BehaviorSubject<SignInSession>({
+        kind: "beforeSignIn" as const,
+      });
 
       await signIn({
+        sessionStore: sessionSubject,
         signInProvider: () => Promise.resolve("fooo"),
         verify: () =>
           Promise.resolve(Err({ kind: "api-client:unknown-error", e: 12 })),
