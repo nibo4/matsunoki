@@ -17,8 +17,7 @@
     "vite": "^2.9.9",
     "vite-plugin-glob": "0.3.2",
     "vite-plugin-solid": "^2.2.6",
-    "vite-plugin-solid-svg": "0.2.0",
-    "vite-plugin-ssr": "0.3.64"
+    "vite-plugin-solid-svg": "0.2.0"
   },
   "dependencies": {
     "@matsunoki/ui": "*",
