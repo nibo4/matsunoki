@@ -13,7 +13,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@matsunoki/core": "*",
     "@matsunoki/eslint-config": "*",
     "@types/babel__core": "7.1.19",
     "@types/lodash.zip": "4.2.7",
@@ -29,6 +28,7 @@
     "vite-plugin-solid-svg": "0.2.0"
   },
   "dependencies": {
+    "@matsunoki/core": "*",
     "@picocss/pico": "1.5.2",
     "@solid-primitives/i18n": "1.1.0",
     "lodash.zip": "4.2.0",
