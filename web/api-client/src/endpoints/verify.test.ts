@@ -6,17 +6,21 @@ describe("responseHandler", () => {
   });
 
   it("ok", () => {
-    const actual = responseHandler({ id: 'foo' });
+    const actual = responseHandler({ id: "foo" });
     expect(actual.ok).toStrictEqual(true);
     expect(actual.val).toStrictEqual({
-      userId: 'foo'
+      userId: "foo",
     });
   });
 });
 
 describe("responseErrorHandler", () => {
   it("error", () => {
-    expect(responseErrorHandler({ kind: 'user_not_found', key: '' }).val).toStrictEqual({kind: 'UserNotFound'});
-    expect(responseErrorHandler({ kind: 'verify_failed', key: '' }).val).toStrictEqual({kind: "VerifyError"});
+    expect(
+      responseErrorHandler({ kind: "user_not_found", key: "" }).val
+    ).toStrictEqual({ kind: "UserNotFound" });
+    expect(
+      responseErrorHandler({ kind: "verify_failed", key: "" }).val
+    ).toStrictEqual({ kind: "VerifyError" });
   });
 });

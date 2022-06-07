@@ -1,10 +1,7 @@
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import { Err, Ok } from "ts-results";
-import { SignUp } from '@matsunoki/api-client'
-import { TestScheduler } from 'rxjs/testing'
-import {
-  handleSignInCallback,  SignInResult,
-} from "./handle-sign-in-callback";
+import { SignUp } from "@matsunoki/api-client";
+import { handleSignInCallback, SignInResult } from "./handle-sign-in-callback";
 
 describe("#handleSignInCallback", () => {
   describe("success pattern", () => {
@@ -17,12 +14,15 @@ describe("#handleSignInCallback", () => {
 
       await handleSignInCallback({
         signUp: () => Promise.resolve(Ok(dummyData)),
-        verify: () => Promise.resolve(Ok({userId: 'foo'})),
-        signInObserver: subject
+        verify: () => Promise.resolve(Ok({ userId: "foo" })),
+        signInObserver: subject,
       })();
-      
+
       expect(subject.getValue()?.ok).toStrictEqual(true);
-      expect(subject.getValue()?.val).toStrictEqual({kind: 'ExistingUser', userId: 'foo'});
+      expect(subject.getValue()?.val).toStrictEqual({
+        kind: "ExistingUser",
+        userId: "foo",
+      });
     });
 
     it("should shed success result in the signInObserver when new user", async () => {
@@ -32,18 +32,19 @@ describe("#handleSignInCallback", () => {
       };
       const subject = new BehaviorSubject<SignInResult | null>(null);
 
-      subject.subscribe((result) => {
-      });
-
       await handleSignInCallback({
         signUp: () => Promise.resolve(Ok(dummyData)),
-        verify: () => Promise.resolve(Err({kind: 'UserNotFound'})),
-        signInObserver: subject
+        verify: () => Promise.resolve(Err({ kind: "UserNotFound" })),
+        signInObserver: subject,
       })();
 
       expect(subject.getValue()?.ok).toStrictEqual(true);
-      expect(subject.getValue()?.val).toStrictEqual({kind: 'NewUser', name: "yyyy", userId: 'xxx'});
-    })
+      expect(subject.getValue()?.val).toStrictEqual({
+        kind: "NewUser",
+        name: "yyyy",
+        userId: "xxx",
+      });
+    });
   });
 
   describe("failed pattern", () => {
@@ -51,26 +52,25 @@ describe("#handleSignInCallback", () => {
       const subject = new BehaviorSubject<SignInResult | null>(null);
 
       await handleSignInCallback({
-        verify: () => Promise.resolve(Err({kind: 'UserNotFound'})),
+        verify: () => Promise.resolve(Err({ kind: "UserNotFound" })),
         signUp: (): ReturnType<SignUp> =>
-          Promise.resolve(Err({ kind: "api-client:unknown-error", e: 'foo' })),
-        signInObserver: subject
+          Promise.resolve(Err({ kind: "api-client:unknown-error", e: "foo" })),
+        signInObserver: subject,
       })();
 
       expect(subject.getValue()?.err).toStrictEqual(true);
-      expect(subject.getValue()?.val.kind).toStrictEqual(
-         "core:unknown-error"
-      );
+      expect(subject.getValue()?.val.kind).toStrictEqual("core:unknown-error");
     });
 
     it("should shed error result in the handleSignInCallbackSubject when failed verify is unkonwon error", async () => {
       const subject = new BehaviorSubject<SignInResult | null>(null);
 
       await handleSignInCallback({
-        verify: () => Promise.resolve(Err({kind: 'api-client:unknown-error', e: 12})),
+        verify: () =>
+          Promise.resolve(Err({ kind: "api-client:unknown-error", e: 12 })),
         signUp: (): ReturnType<SignUp> =>
-          Promise.resolve(Err({ kind: "api-client:unknown-error", e: 'foo' })),
-        signInObserver: subject
+          Promise.resolve(Err({ kind: "api-client:unknown-error", e: "foo" })),
+        signInObserver: subject,
       })();
 
       expect(subject.getValue()?.err).toStrictEqual(true);
