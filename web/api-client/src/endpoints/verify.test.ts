@@ -1,4 +1,4 @@
-import { responseHandler } from "./verify";
+import { responseErrorHandler, responseHandler } from "./verify";
 
 describe("responseHandler", () => {
   it("error", () => {
@@ -11,5 +11,12 @@ describe("responseHandler", () => {
     expect(actual.val).toStrictEqual({
       userId: 'foo'
     });
+  });
+});
+
+describe("responseErrorHandler", () => {
+  it("error", () => {
+    expect(responseErrorHandler({ kind: 'user_not_found', key: '' }).val).toStrictEqual({kind: 'UserNotFound'});
+    expect(responseErrorHandler({ kind: 'verify_failed', key: '' }).val).toStrictEqual({kind: "VerifyError"});
   });
 });

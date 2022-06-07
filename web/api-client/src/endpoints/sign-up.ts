@@ -4,8 +4,7 @@ import { Config, UnknownError } from "./shared";
 import { buildURL, buildHeader, buildUnknownError } from "./internal";
 
 export type SignUpError = {
-  kind: string;
-  key: string;
+  kind: 'AlreadyExist'
 };
 
 export type SignUpResponse = {
@@ -35,6 +34,24 @@ export const responseHandler = (
   }
 };
 
+export const responseErrorHandler = (
+  a: any
+): Result<never, SignUpError | UnknownError> => {
+  try {
+    const schema = z.object({
+      kind: z.string(),
+      key: z.string(),
+    });
+    const parsed = schema.parse(a);
+    if(parsed.kind === 'already_exist') {
+      return Err({kind: 'AlreadyExist'})
+    }
+    return Err(buildUnknownError(a))
+  } catch (e) {
+    return Err(buildUnknownError(e));
+  }
+};
+
 type Dependencies = {
   config: Config;
 };
@@ -42,11 +59,14 @@ type Dependencies = {
 export const signUp =
   (deps: Dependencies): SignUp =>
   async () => {
-    const response = await deps.config.fetch(buildURL("sign_up", deps.config), {
+    const response = (await deps.config.fetch(buildURL("sign_up", deps.config), {
       method: "POST",
       mode: "cors",
       headers: buildHeader(deps.config),
-    });
+    }));
 
-    return responseHandler(response);
+    if(response.ok) {
+      return responseHandler(await response.json());
+    }
+    return responseErrorHandler(await response.json());
   };

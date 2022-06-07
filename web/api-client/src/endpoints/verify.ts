@@ -66,8 +66,8 @@ export const verify =
     });
 
     if(response.ok) {
-      return responseHandler(response);
+      return responseHandler(await response.json());
     }
 
-    return responseHandler(response);
+    return responseErrorHandler(await response.json());
   };
