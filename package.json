@@ -4,7 +4,7 @@
   "description": "Wiki engine",
   "private": true,
   "scripts": {
-    "start": "ultra -r start",
+    "start": "ultra -r start  build:lib:watch --filter web/ui",
     "build": "ultra -r build",
     "format": "ultra -r format",
     "lint": "ultra -r lint",

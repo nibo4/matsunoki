@@ -5,6 +5,8 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
+    "build:lib": "vite build --config ./vite.lib.config.ts",
+    "build:lib:watch": "vite build --config ./vite.lib.config.ts --mode development",
     "lint": "eslint './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "format": "prettier --check './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
