@@ -1,3 +1,4 @@
+import {SignUp, Verify} from "@matsunoki/api-client";
 import { Observer } from "rxjs";
 import { Err, Ok, Result } from "ts-results";
 import { buildCoreUnknownError, CoreUnkownError } from "../error";
@@ -11,6 +12,8 @@ export type SignInResult = Result<SignedInUser, CoreUnkownError>;
 export type SignedInObserver = Observer<SignInResult>;
 
 type SignInDependencies = {
+  signUp: SignUp;
+  verify: Verify;
   signInProvider: SignInWithProvider;
   signedInObserver: SignedInObserver;
 };

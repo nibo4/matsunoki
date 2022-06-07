@@ -1,1 +1,3 @@
-export * from "./handle-sign-up-callback";
+export const dummy = (): void => {
+  console.log("dummy")
+}
