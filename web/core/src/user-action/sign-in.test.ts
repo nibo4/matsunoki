@@ -1,38 +1,33 @@
-import {Subject} from "rxjs";
+import {BehaviorSubject } from "rxjs";
 import {
-  signIn
+  signIn, SignInResult
 } from "./sign-in";
 
-describe("#handleSignUpCallback", () => {
+describe("#signIn", () => {
   describe("when success", () => {
-    it("success result flow in the subject", () => {
-      const subject = new Subject()
+    it("success result flow in the subject", async () => {
+      const subject = new BehaviorSubject<SignInResult | null>(null)
 
-      subject.subscribe((token) => {
-        expect(token).toStrictEqual("fooo")
-      })
-
-      signIn({
+      await signIn({
         signInProvider: () => Promise.resolve("fooo"),
         signedInObserver: subject
-      })
+      })()
+
+      expect(subject.getValue()?.ok).toStrictEqual(true)
+      expect(subject.getValue()?.val).toStrictEqual("fooo")
     });
   });
 
   describe("when failed", () => {
-    it("success result flow in the subject", () => {
-      const subject = new Subject()
+    it("success result flow in the subject", async () => {
+      const subject = new BehaviorSubject<SignInResult | null>(null)
 
-      subject.subscribe({
-        error: (err) => {
-          expect(err).toStrictEqual("fooo")
-        }
-      })
-
-      signIn({
+      await signIn({
         signInProvider: () => Promise.reject("fooo"),
         signedInObserver: subject
-      })
+      })()
+
+      expect(subject.getValue()?.err).toStrictEqual(true)
     });
   });
 });
