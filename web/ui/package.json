@@ -8,12 +8,14 @@
     "lint": "eslint './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "format": "prettier --check './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
-    "format:fix": "prettier --write './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'"
+    "format:fix": "prettier --write './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
+    "type-check": "tsc --noEmit"
   },
   "license": "MIT",
   "devDependencies": {
-    "@matsunoki/eslint-config": "*",
     "@matsunoki/core": "*",
+    "@matsunoki/eslint-config": "*",
+    "@types/babel__core": "7.1.19",
     "@types/lodash.zip": "4.2.7",
     "@typescript-eslint/eslint-plugin": "5.27.0",
     "@typescript-eslint/parser": "5.27.0",

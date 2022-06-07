@@ -9,13 +9,15 @@
     "format": "ultra -r format",
     "lint": "ultra -r lint",
     "fix":  "ultra -r lint:fix && ultra -r format:fix",
-    "test":  "ultra -r test"
+    "test":  "ultra -r test",
+    "type-check":  "ultra -r type-check"
   },
   "workspaces": [
     "./web/ui",
     "./web/core",
     "./web/api-client",
-    "./web/eslint-config"
+    "./web/eslint-config",
+    "./web/ssr-server"
   ],
   "devDependencies": {
     "ultra-runner": "3.10.5"
