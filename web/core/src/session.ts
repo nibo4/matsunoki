@@ -1,13 +1,16 @@
 import type { Config } from "@matsunoki/api-client";
+import { BehaviorSubject } from "rxjs";
 
-export type Session =
+export type SignInSession =
   | {
-      kind: "beforeInitialize";
+      kind: "beforeSignIn";
     }
   | {
-      kind: "initialized";
+      kind: "signed";
       apiKey: string;
     };
+
+export type SessionStore = BehaviorSubject<SignInSession>;
 
 export class BeforeInitializeErrorError extends Error {
   constructor(...params: any[]) {
@@ -16,12 +19,16 @@ export class BeforeInitializeErrorError extends Error {
   }
 }
 
-export const buildApiClientConfig = (session: Session): Config => {
-  if (session.kind !== "initialized") throw new BeforeInitializeErrorError();
+export const buildGetConfig = (sessionStore: SessionStore): (() => Config) => {
+  return () => {
+    const session = sessionStore.getValue();
 
-  return {
-    fetch: window.fetch,
-    authorizationToken: session.apiKey,
-    host: import.meta.env.ACCOUNT_API_HOST,
+    if (session.kind === "beforeSignIn") throw new BeforeInitializeErrorError();
+
+    return {
+      fetch: window.fetch,
+      authorizationToken: session.apiKey,
+      host: import.meta.env.ACCOUNT_API_HOST,
+    };
   };
 };

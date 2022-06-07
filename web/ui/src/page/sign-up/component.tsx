@@ -4,11 +4,9 @@ import { DefaultLayout } from "../../layout/default";
 import GoogleLogo from "../../assets/btn_google_dark_normal_ios.svg";
 import { SignUpI18nContext } from "./dict";
 import styles from "./style.module.css";
-import { useSignUpDIContext } from "./di-context";
 
 const PageContent: Component = () => {
   const [t] = useI18n();
-  const { signUp } = useSignUpDIContext();
 
   return (
     <DefaultLayout>
@@ -19,7 +17,7 @@ const PageContent: Component = () => {
             <label>{t("description")}</label>
           </section>
           <section>
-            <button class={styles["sign-up-with-google"]} onClick={signUp}>
+            <button class={styles["sign-up-with-google"]}>
               <GoogleLogo />
               <span>{t("signUpWithGoogle")}</span>
             </button>

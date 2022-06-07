@@ -3,31 +3,32 @@ import { z } from "zod";
 import { Config, UnknownError } from "./shared";
 import { buildURL, buildHeader, buildUnknownError } from "./internal";
 
-export type SignUpError = {
-  kind: "AlreadyExist";
-};
+export type VerifyError =
+  | {
+      kind: "VerifyError";
+    }
+  | {
+      kind: "UserNotFound";
+    };
 
-export type SignUpResponse = {
+export type VerifyResponse = {
   userId: string;
-  name: string;
 };
 
-export type SignUp = () => Promise<
-  Result<SignUpResponse, SignUpError | UnknownError>
+export type Verify = () => Promise<
+  Result<VerifyResponse, VerifyError | UnknownError>
 >;
 
 export const responseHandler = (
   a: any
-): Result<SignUpResponse, SignUpError | UnknownError> => {
+): Result<VerifyResponse, VerifyError | UnknownError> => {
   try {
     const schema = z.object({
-      user_id: z.string(),
-      name: z.string(),
+      id: z.string(),
     });
     const parsed = schema.parse(a);
     return Ok({
-      userId: parsed.user_id,
-      name: parsed.name,
+      userId: parsed.id,
     });
   } catch (e) {
     return Err(buildUnknownError(e));
@@ -36,17 +37,21 @@ export const responseHandler = (
 
 export const responseErrorHandler = (
   a: any
-): Result<never, SignUpError | UnknownError> => {
+): Result<never, VerifyError | UnknownError> => {
   try {
     const schema = z.object({
       kind: z.string(),
       key: z.string(),
     });
     const parsed = schema.parse(a);
-    if (parsed.kind === "already_exist") {
-      return Err({ kind: "AlreadyExist" });
+    switch (parsed.kind) {
+      case "verify_failed":
+        return Err({ kind: "VerifyError" });
+      case "user_not_found":
+        return Err({ kind: "UserNotFound" });
+      default:
+        return Err(buildUnknownError(parsed));
     }
-    return Err(buildUnknownError(a));
   } catch (e) {
     return Err(buildUnknownError(e));
   }
@@ -56,11 +61,11 @@ type Dependencies = {
   getConfig: () => Config;
 };
 
-export const signUp =
-  (deps: Dependencies): SignUp =>
+export const verify =
+  (deps: Dependencies): Verify =>
   async () => {
     const config = deps.getConfig();
-    const response = await config.fetch(buildURL("sign_up", config), {
+    const response = await config.fetch(buildURL("verify", config), {
       method: "POST",
       mode: "cors",
       headers: buildHeader(config),
@@ -69,5 +74,6 @@ export const signUp =
     if (response.ok) {
       return responseHandler(await response.json());
     }
+
     return responseErrorHandler(await response.json());
   };

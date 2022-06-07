@@ -1,9 +1,6 @@
 import { Component, createContext, JSXElement, useContext } from "solid-js";
-import { SignUpUserAction, signUpUserActionForPreview } from "@matsunoki/core";
 
-type Dependencies = {
-  signUp: SignUpUserAction;
-};
+type Dependencies = {};
 const SignUpDIContext = createContext<Dependencies>();
 
 export const useSignUpDIContext = (): Dependencies => {
@@ -18,11 +15,7 @@ export const SignUpDIContextProviderForPreview: Component<{
   children: JSXElement;
 }> = (props) => {
   return (
-    <SignUpDIContext.Provider
-      value={{
-        signUp: signUpUserActionForPreview(),
-      }}
-    >
+    <SignUpDIContext.Provider value={{}}>
       {props.children}
     </SignUpDIContext.Provider>
   );

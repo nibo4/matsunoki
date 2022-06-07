@@ -4,3 +4,4 @@ database/*.db
 node_modules
 web/**/.ultra.cache.json
 web/**/dist/*
+web/core/src/firebase.config.ts

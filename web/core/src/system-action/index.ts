@@ -1,1 +1,3 @@
-export const dummy = (): void => {};
+export const dummy = (): void => {
+  console.log("dummy");
+};
