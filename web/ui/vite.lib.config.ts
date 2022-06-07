@@ -7,6 +7,7 @@ export default defineConfig(({ command, mode }) =>{
   return {
     plugins: [solidPlugin(), svgPlugin()],
     build: {
+      outDir: "./lib",
       watch: mode === 'development' ? {
         include: ["./src/**/*", "./src/*"],
         exclude: ["./src/App.tsx"]
@@ -14,7 +15,7 @@ export default defineConfig(({ command, mode }) =>{
       lib: {
         entry: path.resolve(__dirname, 'src/index.tsx'),
         name: 'matsunoki-ui',
-        fileName: 'matsunoki-ui'
+        fileName: 'matsunoki-ui',
       },
       rollupOptions: {
         external: ['solid-js','solid-app-router'],
