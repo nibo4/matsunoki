@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "module": "lib/matsunoki-ui.es.js",
-  "types": "./dist/main.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "start": "concurrently npm:start:lib npm:start:dts",
     "start:preview": "vite",
