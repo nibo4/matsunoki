@@ -1,18 +1,10 @@
 {
-  "name": "@matsunoki/ui",
+  "name": "@matsunoki/app",
   "version": "0.0.1",
   "description": "",
-  "module": "lib/matsunoki-ui.es.js",
-  "types": "lib/index.d.ts",
   "scripts": {
-    "start": "concurrently npm:start:lib npm:start:dts",
-    "start:preview": "vite",
-    "start:lib": "vite build --config ./vite.lib.config.ts --mode development",
-    "start:dts": "rollup -c rollup.config.js --watch",
-    "build:lib": "vite build --config ./vite.lib.config.ts",
-    "build:dts": "rollup -c rollup.config.js",
-    "build:preview": "vite build",
-    "build": "npm run build:lib && npm run build:dts",
+    "start": "vite",
+    "build": "vite build",
     "lint": "eslint './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
     "format": "prettier --check './src/**/*.{ts,tsx}' './src/*.{ts,tsx}'",
@@ -39,10 +31,8 @@
   },
   "dependencies": {
     "@matsunoki/core": "*",
+    "@matsunoki/ui": "*",
     "@picocss/pico": "1.5.2",
-    "@solid-primitives/i18n": "1.1.0",
-    "lodash.zip": "4.2.0",
-    "rollup-plugin-import-css": "3.0.3",
     "solid-app-router": "0.3.3",
     "solid-js": "^1.4.2"
   }
