@@ -16,6 +16,6 @@ export const buildURL = (path: string, config: Config): string => {
 export const buildHeader = (config: Config): Record<string, string> => {
   return {
     "Content-Type": "application/json",
-    Authorization: `Bearer: ${config.authorizationToken}`,
+    Authorization: `Bearer ${config.authorizationToken}`,
   };
 };

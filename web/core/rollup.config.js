@@ -8,6 +8,7 @@ export default [
     plugins: [esbuild({
       tsconfig: './tsconfig.json'
     }), metaEnv({
+      ACCOUNT_API_HOST: process.env.ACCOUNT_API_HOST,
       FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
       FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
       FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,

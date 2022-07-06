@@ -26,7 +26,7 @@ export const buildGetConfig = (sessionStore: SessionStore): (() => Config) => {
     if (session.kind === "beforeSignIn") throw new BeforeInitializeErrorError();
 
     return {
-      fetch: window.fetch,
+      fetch: window.fetch.bind(window),
       authorizationToken: session.apiKey,
       host: import.meta.env.ACCOUNT_API_HOST,
     };

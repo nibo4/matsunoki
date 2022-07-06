@@ -1,7 +1,9 @@
+use axum::http::{HeaderValue, Method};
 use axum::routing::{get, post};
 use axum::Router;
 use kernel::Kernel;
 use tower_http::add_extension::AddExtensionLayer;
+use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::TraceLayer;
 
 pub mod actor;
@@ -25,4 +27,10 @@ pub fn router(kernel: Kernel) -> Router {
         )
         .layer(AddExtensionLayer::new(kernel))
         .layer(TraceLayer::new_for_http())
+        .layer(
+            CorsLayer::new()
+                .allow_origin("http://localhost:3003".parse::<HeaderValue>().unwrap())
+                .allow_methods([Method::GET, Method::POST])
+                .allow_headers(Any),
+        )
 }

@@ -16,7 +16,10 @@ const PageContent: Component = () => {
     const unsubscribe = core.readModels.signedInObservable.subscribe(
       (result) => {
         if (result.ok) navigateToRoot();
-        if (result.err) window.alert("ログインに失敗しました");
+        if (result.err) {
+          console.dir(result.val);
+          window.alert("ログインに失敗しました");
+        }
       }
     );
     return unsubscribe;
