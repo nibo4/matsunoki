@@ -1,7 +1,9 @@
 import { Component, createContext, JSXElement, useContext } from "solid-js";
 
-type Dependencies = {};
-const SignUpDIContext = createContext<Dependencies>();
+type Dependencies = {
+  navigateToRoot: () => void;
+};
+export const SignUpDIContext = createContext<Dependencies>();
 
 export const useSignUpDIContext = (): Dependencies => {
   const ctx = useContext(SignUpDIContext);
@@ -15,7 +17,13 @@ export const SignUpDIContextProviderForPreview: Component<{
   children: JSXElement;
 }> = (props) => {
   return (
-    <SignUpDIContext.Provider value={{}}>
+    <SignUpDIContext.Provider
+      value={{
+        navigateToRoot: () => {
+          console.log("to root");
+        },
+      }}
+    >
       {props.children}
     </SignUpDIContext.Provider>
   );

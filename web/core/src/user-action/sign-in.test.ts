@@ -2,7 +2,7 @@ import { SignUp } from "@matsunoki/api-client";
 import { BehaviorSubject } from "rxjs";
 import { Err, Ok } from "ts-results";
 import { SignInSession } from "../session";
-import { signIn, SignInResult } from "./sign-in";
+import { signIn } from "./sign-in";
 
 describe("#signIn", () => {
   describe("success pattern", () => {
@@ -11,7 +11,7 @@ describe("#signIn", () => {
         userId: "foo",
         name: "yyyy",
       };
-      const subject = new BehaviorSubject<SignInResult | null>(null);
+      const subject = new BehaviorSubject<any>(null);
       const sessionSubject = new BehaviorSubject<SignInSession>({
         kind: "beforeSignIn" as const,
       });
@@ -36,7 +36,7 @@ describe("#signIn", () => {
         userId: "xxx",
         name: "yyyy",
       };
-      const subject = new BehaviorSubject<SignInResult | null>(null);
+      const subject = new BehaviorSubject<any>(null);
       const sessionSubject = new BehaviorSubject<SignInSession>({
         kind: "beforeSignIn" as const,
       });
@@ -65,7 +65,7 @@ describe("#signIn", () => {
         name: "yyyy",
       };
 
-      const subject = new BehaviorSubject<SignInResult | null>(null);
+      const subject = new BehaviorSubject<any>(null);
       const sessionSubject = new BehaviorSubject<SignInSession>({
         kind: "beforeSignIn" as const,
       });
@@ -82,7 +82,7 @@ describe("#signIn", () => {
     });
 
     it("should shed error result in the signedInObserver when verify === user-not-found and failed signUp", async () => {
-      const subject = new BehaviorSubject<SignInResult | null>(null);
+      const subject = new BehaviorSubject<any>(null);
       const sessionSubject = new BehaviorSubject<SignInSession>({
         kind: "beforeSignIn" as const,
       });
@@ -100,7 +100,7 @@ describe("#signIn", () => {
     });
 
     it("should shed error result in the signedInObserver when failed verify and signUp", async () => {
-      const subject = new BehaviorSubject<SignInResult | null>(null);
+      const subject = new BehaviorSubject<any>(null);
       const sessionSubject = new BehaviorSubject<SignInSession>({
         kind: "beforeSignIn" as const,
       });
