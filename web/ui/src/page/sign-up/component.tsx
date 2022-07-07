@@ -1,12 +1,29 @@
 import { I18nContext, useI18n } from "@solid-primitives/i18n";
-import type { Component } from "solid-js";
+import { Component, createEffect } from "solid-js";
 import { DefaultLayout } from "../../layout/default";
 import GoogleLogo from "../../assets/btn_google_dark_normal_ios.svg";
+import { useCore } from "../../core-context";
 import { SignUpI18nContext } from "./dict";
 import styles from "./style.module.css";
+import { useSignUpDIContext } from "./di-context";
 
 const PageContent: Component = () => {
   const [t] = useI18n();
+  const core = useCore();
+  const { navigateToRoot } = useSignUpDIContext();
+
+  createEffect(() => {
+    const unsubscribe = core.readModels.signedInObservable.subscribe(
+      (result) => {
+        if (result.ok) navigateToRoot();
+        if (result.err) {
+          console.dir(result.val);
+          window.alert("ログインに失敗しました");
+        }
+      }
+    );
+    return unsubscribe;
+  });
 
   return (
     <DefaultLayout>
@@ -17,7 +34,12 @@ const PageContent: Component = () => {
             <label>{t("description")}</label>
           </section>
           <section>
-            <button class={styles["sign-up-with-google"]}>
+            <button
+              class={styles["sign-up-with-google"]}
+              onClick={() => {
+                core.userActions.signIn();
+              }}
+            >
               <GoogleLogo />
               <span>{t("signUpWithGoogle")}</span>
             </button>

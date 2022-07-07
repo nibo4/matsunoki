@@ -6,3 +6,5 @@ web/**/.ultra.cache.json
 web/**/dist/*
 web/core/src/firebase.config.ts
 web/**/lib/*
+.env
+.turbo

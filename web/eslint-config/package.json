@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "echo 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nibo4/matsunoki.git"

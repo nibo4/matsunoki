@@ -1,6 +1,6 @@
 import { BehaviorSubject, Subject } from "rxjs";
 import { signUp, verify } from "@matsunoki/api-client";
-import { SignedInObserver, signIn } from "./user-action";
+import { SignedInObservable, signIn, SignInResult } from "./user-action";
 import { firebaseSignInWithProvider } from "./infra/firebase-auth-provider";
 import { SignInSession, buildGetConfig } from "./session";
 
@@ -10,7 +10,7 @@ export * as systemAction from "./system-action";
 
 export type App = {
   readModels: {
-    signedInObserver: SignedInObserver;
+    signedInObservable: SignedInObservable;
   };
   systemActions: {};
   userActions: {
@@ -19,19 +19,19 @@ export type App = {
 };
 
 export const initForProduction: () => App = () => {
-  const signedInObserver = new Subject();
+  const signedInSubject = new Subject<SignInResult>();
   const sessionStore = new BehaviorSubject<SignInSession>({
     kind: "beforeSignIn",
   });
   return {
     readModels: {
-      signedInObserver,
+      signedInObservable: signedInSubject,
     },
     systemActions: {},
     userActions: {
       signIn: signIn({
         sessionStore,
-        signedInObserver,
+        signedInObserver: signedInSubject,
         signInProvider: firebaseSignInWithProvider,
         signUp: signUp({
           getConfig: buildGetConfig(sessionStore),
