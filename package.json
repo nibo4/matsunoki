@@ -4,7 +4,7 @@
   "description": "Wiki engine",
   "private": true,
   "scripts": {
-    "start": "turbo run start --parallel",
+    "start": "turbo run start",
     "build": "turbo run build",
     "format": "turbo run format",
     "lint": "turbo run lint",
