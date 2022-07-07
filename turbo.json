@@ -3,7 +3,7 @@
   "baseBranch": "origin/main",
   "pipeline": {
     "type-check": {
-      "dependsOn": ["build"]
+      "dependsOn": ["^build"]
     },
 
     "format:fix": {
@@ -23,7 +23,7 @@
     },
 
     "start": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "outputs": []
     },
 

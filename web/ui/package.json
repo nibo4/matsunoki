@@ -9,6 +9,7 @@
     "start:preview": "vite",
     "start:lib": "vite build --config ./vite.lib.config.ts --mode development",
     "start:dts": "rollup -c rollup.config.js --watch",
+    "build":  "concurrently npm:build:lib npm:build:dts  npm:build:preview",
     "build:lib": "vite build --config ./vite.lib.config.ts",
     "build:dts": "rollup -c rollup.config.js",
     "build:preview": "vite build",
