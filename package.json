@@ -8,9 +8,9 @@
     "build": "ultra -r build:lib && ultra -r build:dts && ultra -r build",
     "format": "ultra -r format",
     "lint": "ultra -r lint",
-    "fix":  "ultra -r lint:fix && ultra -r format:fix",
-    "test":  "ultra -r test",
-    "type-check":  "ultra -r type-check"
+    "fix": "ultra -r lint:fix && ultra -r format:fix",
+    "test": "ultra -r test",
+    "type-check": "ultra -r type-check"
   },
   "workspaces": [
     "./web/ui",
@@ -20,6 +20,7 @@
     "./web/eslint-config"
   ],
   "devDependencies": {
+    "turbo": "1.3.1",
     "ultra-runner": "3.10.5"
   }
 }
